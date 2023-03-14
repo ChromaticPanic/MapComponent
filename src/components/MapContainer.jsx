@@ -1,15 +1,15 @@
 import { Resizable } from 'react-resizable';
 import { forwardRef } from 'react';
 
-const MapContainer = forwardRef((props, ref) => {
+const MapHolder = forwardRef((props, ref) => {
   const {handleAxis, ...restProps} = props;
   return <div ref={ref} className={`foo handle-${handleAxis}`} {...restProps} />;
 });
 
-const MapComponent = () => {
+const MapContainer = () => {
   return (
-    <Resizable handle={<MapContainer />} />
+    <Resizable handle={<MapHolder />} />
   );
 }
 
-export default MapComponent;
+export default MapContainer;
