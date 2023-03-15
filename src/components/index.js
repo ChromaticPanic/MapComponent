@@ -1,5 +1,4 @@
 import Card from './Card';
-import MapView from './MapView';
-import MapContainer from './MapContainer';
+import MapComponent from './MapComponent';
 
-export { Card, MapComponent, MapView, MapContainer };
+export { Card, MapComponent };
