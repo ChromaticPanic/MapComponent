@@ -1,20 +1,24 @@
 import PropTypes from "prop-types";
 import GoogleMapReact from "google-map-react";
+import MapIncidentPin from "./MapIncidentPin";
 
 const MapView = (props) => {
-    const { zoom, apiKey, location, stations } = props;
+    const {
+        zoom,
+        apiKey,
+        location,
+        stations,
+        incidentsHigh,
+        incidentsMid,
+        incidentsLow,
+    } = props;
 
     // Return map bounds based on list of stations
     const getMapBounds = (map, maps, stations) => {
         const bounds = new maps.LatLngBounds();
 
         stations.forEach((s) => {
-            bounds.extend(
-                new maps.LatLng(
-                    s.lat,
-                    s.lng
-                )
-            );
+            bounds.extend(new maps.LatLng(s.lat, s.lng));
         });
         return bounds;
     };
@@ -35,7 +39,7 @@ const MapView = (props) => {
         // Fit map to bounds
         map.fitBounds(bounds);
         // Bind the resize listener
-        //bindResizeListener(map, maps, bounds);
+        bindResizeListener(map, maps, bounds);
     };
 
     const createMapOptions = (maps) => {
@@ -56,8 +60,29 @@ const MapView = (props) => {
         };
     };
 
+    const pinStyleCommon = {
+        fontSize: "36px",
+        position: "absolute",
+        transform: "translate(-20px, -40px)",
+    };
+
+    const pinStyleLow = {
+        ...pinStyleCommon,
+        color: "blue",
+    };
+
+    const pinStyleMid = {
+        ...pinStyleCommon,
+        color: "yellow",
+    };
+
+    const pinStyleHigh = {
+        ...pinStyleCommon,
+        color: "red",
+    };
+
     return (
-        <div className="google-map" style={{ height: '100vh', width: '100%' }}>
+        <div className="google-map" style={{ height: "100vh", width: "100%" }}>
             <GoogleMapReact
                 bootstrapURLKeys={{ key: apiKey }}
                 defaultCenter={location}
@@ -67,7 +92,29 @@ const MapView = (props) => {
                     handleApiLoaded(map, maps, stations)
                 }
                 options={createMapOptions}
-            ></GoogleMapReact>
+            >
+                {incidentsHigh.map((i) => (
+                    <MapIncidentPin
+                        lat={i.lat}
+                        lng={i.lng}
+                        styleOptions={pinStyleHigh}
+                    />
+                ))}
+                {incidentsMid.map((i) => (
+                    <MapIncidentPin
+                        lat={i.lat}
+                        lng={i.lng}
+                        styleOptions={pinStyleMid}
+                    />
+                ))}
+                {incidentsLow.map((i) => (
+                    <MapIncidentPin
+                        lat={i.lat}
+                        lng={i.lng}
+                        styleOptions={pinStyleLow}
+                    />
+                ))}
+            </GoogleMapReact>
         </div>
     );
 };
@@ -108,9 +155,24 @@ MapView.defaultProps = {
             lng: -94.14294594619656,
         },
     ],
-    incidentsLow: [],
-    incidentsMid: [],
-    incidentsHigh: [],
+    incidentsLow: [
+        {
+            lat: 58.19956756459539,
+            lng: -94.44012038064184,
+        },
+    ],
+    incidentsMid: [
+        {
+            lat: 55.228859176296965,
+            lng: -99.37479370706016,
+        },
+    ],
+    incidentsHigh: [
+        {
+            lat: 55.57435200674502,
+            lng: -98.2498302730497,
+        },
+    ],
 };
 
 export default MapView;
