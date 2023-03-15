@@ -1,6 +1,8 @@
 import PropTypes from "prop-types";
 import GoogleMapReact from "google-map-react";
 import MapIncidentPin from "./MapIncidentPin";
+import MapLegend from "./MapLegend";
+import { useState } from "react";
 
 const MapView = (props) => {
     const {
@@ -14,6 +16,63 @@ const MapView = (props) => {
         incidentsMid,
         incidentsLow,
     } = props;
+
+    const pinStyleCommon = {
+        fontSize: "36px",
+        position: "absolute",
+        transform: "translate(-20px, -40px)",
+    };
+
+    const pinStyleLow = {
+        ...pinStyleCommon,
+        color: "blue",
+    };
+
+    const pinStyleMid = {
+        ...pinStyleCommon,
+        color: "orange",
+    };
+
+    const pinStyleHigh = {
+        ...pinStyleCommon,
+        color: "red",
+    };
+
+    const iconStyles = [
+        "fluent-mdl2:location-dot",
+        "fluent-mdl2:location-fill",
+        "raphael:location",
+        "mdi:map-marker-radius-outline",
+        "ic:twotone-location-on",
+        "ic:sharp-location-on",
+        "mdi:location-radius",
+        "openmoji:location-indicator",
+    ];
+
+    const [iconStyle, setIconStyle] = useState(iconStyles[0]);
+
+    const withoutTransform = (style) => {
+        const { transform, ...rest } = style;
+        return rest;
+    };
+
+    const legendItems = [
+        {
+            name: "Active Remediation",
+            iconStyle: iconStyle,
+            styleOptions: withoutTransform(pinStyleLow),
+        },
+        {
+            name: "Predicted Incident",
+            iconStyle: iconStyle,
+            styleOptions: withoutTransform(pinStyleMid),
+        },
+        {
+            name: "High Priority Incident",
+            iconStyle: iconStyle,
+            styleOptions: withoutTransform(pinStyleHigh),
+        },
+    ];
 
     // Return map bounds based on list of stations
     const getMapBounds = (map, maps, stations) => {
@@ -42,6 +101,10 @@ const MapView = (props) => {
         map.fitBounds(bounds);
         // Bind the resize listener
         bindResizeListener(map, maps, bounds);
+
+        map.controls[maps.ControlPosition.LEFT_TOP].push(
+            document.getElementById("map-legend")
+        );
     };
 
     const createMapOptions = (maps) => {
@@ -49,42 +112,17 @@ const MapView = (props) => {
             panControl: true,
             mapTypeControl: true,
             mapTypeId: maps.MapTypeId.HYBRID,
-            // mapTypeControlOptions: {
-            //     style: maps.MapTypeControlStyle.HORIZONTAL_BAR,
-            //     position: maps.ControlPosition.BOTTOM_CENTER,
-            //     mapTypeIds: [
-            //         maps.MapTypeId.ROADMAP,
-            //         maps.MapTypeId.SATELLITE,
-            //         maps.MapTypeId.HYBRID
-            //     ]
-            // },
+            mapTypeControlOptions: {
+                style: maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                position: maps.ControlPosition.TOP_CENTER,
+            },
             scrollwheel: true,
         };
     };
 
-    const pinStyleCommon = {
-        fontSize: "36px",
-        position: "absolute",
-        transform: "translate(-20px, -40px)",
-    };
-
-    const pinStyleLow = {
-        ...pinStyleCommon,
-        color: "blue",
-    };
-
-    const pinStyleMid = {
-        ...pinStyleCommon,
-        color: "yellow",
-    };
-
-    const pinStyleHigh = {
-        ...pinStyleCommon,
-        color: "red",
-    };
-
     return (
         <div className="google-map" style={{ width: width, height: height }}>
+            <MapLegend legendItems={legendItems} />
             <GoogleMapReact
                 bootstrapURLKeys={{ key: apiKey }}
                 defaultCenter={location}
@@ -97,23 +135,29 @@ const MapView = (props) => {
             >
                 {incidentsHigh.map((i) => (
                     <MapIncidentPin
+                        key={i.lat + i.lng}
                         lat={i.lat}
                         lng={i.lng}
                         styleOptions={pinStyleHigh}
+                        iconStyle={iconStyle}
                     />
                 ))}
                 {incidentsMid.map((i) => (
                     <MapIncidentPin
+                        key={i.lat + i.lng}
                         lat={i.lat}
                         lng={i.lng}
                         styleOptions={pinStyleMid}
+                        iconStyle={iconStyle}
                     />
                 ))}
                 {incidentsLow.map((i) => (
                     <MapIncidentPin
+                        key={i.lat + i.lng}
                         lat={i.lat}
                         lng={i.lng}
                         styleOptions={pinStyleLow}
+                        iconStyle={iconStyle}
                     />
                 ))}
             </GoogleMapReact>

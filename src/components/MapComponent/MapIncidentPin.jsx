@@ -1,9 +1,9 @@
 import PropTypes from "prop-types";
-import { Icon } from '@iconify/react';
+import { Icon } from "@iconify/react";
 
-const MapIncidentPin = ({ text, onClick, styleOptions }) => (
-    <div className="pin" style={styleOptions}>
-        <Icon icon="mdi:map-marker-radius-outline" className="pin-icon" onClick={onClick} />
+const MapIncidentPin = ({ text, onClick, styleOptions, iconStyle, key }) => (
+    <div className="pin" style={styleOptions} key={key}>
+        <Icon icon={iconStyle} className="pin-icon" onClick={onClick} />
         <p className="pin-text">{text}</p>
     </div>
 );
