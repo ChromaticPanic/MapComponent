@@ -13,11 +13,12 @@ const MapComponent = () => {
         lng: -96.64761357599087,
     };
 
-    const key = process.env.REACT_APP_GOOGLE_MAPS_KEY;
+    const height = "100vh";
+    const width = "100%";
 
     return (
         <div id="map-component">
-            <MapView center={center} />
+            <MapView center={center} height={height} width={width} />
         </div>
     );
 };

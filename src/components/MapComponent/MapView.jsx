@@ -7,6 +7,8 @@ const MapView = (props) => {
         zoom,
         apiKey,
         location,
+        width,
+        height,
         stations,
         incidentsHigh,
         incidentsMid,
@@ -82,7 +84,7 @@ const MapView = (props) => {
     };
 
     return (
-        <div className="google-map" style={{ height: "100vh", width: "100%" }}>
+        <div className="google-map" style={{ width: width, height: height }}>
             <GoogleMapReact
                 bootstrapURLKeys={{ key: apiKey }}
                 defaultCenter={location}
@@ -120,8 +122,8 @@ const MapView = (props) => {
 };
 
 MapView.propTypes = {
-    width: PropTypes.number,
-    height: PropTypes.number,
+    width: PropTypes.string,
+    height: PropTypes.string,
     location: PropTypes.shape({
         lat: PropTypes.number.isRequired,
         lng: PropTypes.number.isRequired,
