@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import GoogleMapReact from "google-map-react";
 import MapIncidentPin from "./MapIncidentPin";
 import MapLegend from "./MapLegend";
+import tracks from "./tracks.geojson";
 import { useState } from "react";
 
 const MapView = (props) => {
@@ -20,7 +21,8 @@ const MapView = (props) => {
     const pinStyleCommon = {
         fontSize: "36px",
         position: "absolute",
-        transform: "translate(-20px, -40px)",
+        //transform: "translate(-20px, -40px)",
+        transform: "translate(-15px, -15px)",
     };
 
     const pinStyleLow = {
@@ -52,7 +54,7 @@ const MapView = (props) => {
     const [iconStyle, setIconStyle] = useState(iconStyles[0]);
 
     const withoutTransform = (style) => {
-        const { transform, ...rest } = style;
+        const { transform, position, ...rest } = style;
         return rest;
     };
 
@@ -93,6 +95,14 @@ const MapView = (props) => {
         });
     };
 
+    const setupTracksLayer = (map) => {
+        map.data.loadGeoJson(tracks);
+        map.data.setStyle({
+            strokeColor: "red",
+            strokeWeight: 1.2,
+        });
+    };
+
     // Fit map to its bounds after the api is loaded
     const handleApiLoaded = (map, maps, stations) => {
         // Get bounds by our places
@@ -105,6 +115,8 @@ const MapView = (props) => {
         map.controls[maps.ControlPosition.LEFT_TOP].push(
             document.getElementById("map-legend")
         );
+
+        setupTracksLayer(map);
     };
 
     const createMapOptions = (maps) => {
@@ -189,12 +201,12 @@ MapView.defaultProps = {
         lng: -96.64761357599087,
     },
     apiKey: process.env.REACT_APP_GOOGLE_MAPS_KEY,
-    zoom: 10,
+    zoom: 15,
     tracks: [],
     stations: [
         {
-            lat: 53.78397438209464,
-            lng: -101.7078783406435,
+            lat: 53.87655945167964,
+            lng: -101.20489774881213,
         },
         {
             lat: 58.80494814618657,
@@ -203,20 +215,20 @@ MapView.defaultProps = {
     ],
     incidentsLow: [
         {
-            lat: 58.19956756459539,
-            lng: -94.44012038064184,
+            lat: 58.591716270539905,
+            lng: -94.12363035979969,
         },
     ],
     incidentsMid: [
         {
-            lat: 55.228859176296965,
-            lng: -99.37479370706016,
+            lat: 54.49216352504018,
+            lng: -99.78903833577601,
         },
     ],
     incidentsHigh: [
         {
-            lat: 55.57435200674502,
-            lng: -98.2498302730497,
+            lat: 55.30693065357311,
+            lng: -97.73583304648153,
         },
     ],
 };
