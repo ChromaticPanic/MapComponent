@@ -6,7 +6,7 @@ const legendStyle = {
     padding: "5px",
     margin: "40px",
     border: "5px solid",
-    borderColor: "#f4d03f",
+    borderColor: "#85929e",
     borderRadius: "10px",
     fontSize: "20px",
     borderCollapse: "collapse",

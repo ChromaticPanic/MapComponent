@@ -98,8 +98,8 @@ const MapView = (props) => {
     const setupTracksLayer = (map) => {
         map.data.loadGeoJson(tracks);
         map.data.setStyle({
-            strokeColor: "red",
-            strokeWeight: 1.2,
+            strokeColor: "#d35400",
+            strokeWeight: 1.5,
         });
     };
 
