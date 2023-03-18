@@ -3,10 +3,11 @@ import GoogleMapReact from "google-map-react";
 import MapIncidentPin from "./components/MapIncidentPin";
 import MapLegend from "./components/MapLegend";
 import {
-    MarkerActiveRemediation,
-    MarkerHighPriorityIncident,
-    MarkerPredictedIncident,
+    markerIcon,
+    markerHighPriorityIncident,
+    markerPredictedIncident,
 } from "./components/MapIcons";
+import { mapMarkers } from "./components/MapMarker";
 import tracks from "./assets/tracks.geojson";
 import { useState, useEffect, useMemo } from "react";
 
@@ -71,10 +72,12 @@ const MapView = (props) => {
 
     const [iconStyle, setIconStyle] = useState(iconStyles[0]);
     const [legendItems, setLegendItems] = useState([]);
-    const [map, setMap] = useState(null);
-    const [maps, setMaps] = useState(null);
+    const [mapRef, setMap] = useState(null);
+    const [mapsRef, setMaps] = useState(null);
     const [bounds, setBounds] = useState(null);
-    const [markersActiveRemediation, setMarkersActiveRemediation] = useState([]);
+    const [markersActiveRemediation, setMarkersActiveRemediation] = useState(
+        []
+    );
     const [markersPredicted, setMarkersPredicted] = useState([]);
     const [markersHighPriority, setMarkersHighPriority] = useState([]);
     const [zoomLevel, setZoomLevel] = useState(zoom);
@@ -83,6 +86,14 @@ const MapView = (props) => {
         const { transform, position, ...rest } = style;
         return rest;
     };
+
+    const scaleSmSolo = 0.0125;
+    const scaleMdSolo = 0.015;
+    const scaleLgSolo = 0.025;
+    const scaleLgCluster = 0.05;
+    const pinColorActiveRemediation = "blue";
+    const pinColorPredictedIncident = "orange";
+    const pinColorHighPriorityIncident = "red";
 
     // will probably get removed
     useEffect(() => {
@@ -107,48 +118,83 @@ const MapView = (props) => {
 
     // Set map bounds based on list of stations
     const setupMap = () => {
-        if (!map || !maps) return;
-        const bounds = new maps.LatLngBounds();
+        if (!mapRef || !mapsRef) return;
+        const bounds = new mapsRef.LatLngBounds();
 
         stations.forEach((s) => {
-            bounds.extend(new maps.LatLng(s.lat, s.lng));
+            bounds.extend(new mapsRef.LatLng(s.lat, s.lng));
         });
         setBounds(bounds);
-        map.fitBounds(bounds);
-        setZoomLevel(map.getZoom());
+        mapRef.fitBounds(bounds);
+        setZoomLevel(mapRef.getZoom());
     };
-    useEffect(setupMap, [map, maps, stations]);
+    useEffect(setupMap, [mapRef, mapsRef, stations]);
 
     // Re-center map when resizing the window
     const handleResize = () => {
-        if (!map || !maps) return;
-        maps.event.addDomListenerOnce(map, "idle", () => {
-            maps.event.addDomListener(window, "resize", () => {
-                map.fitBounds(bounds, 20);
+        if (!mapRef || !mapsRef) return;
+        mapsRef.event.addDomListenerOnce(mapRef, "idle", () => {
+            mapsRef.event.addDomListener(window, "resize", () => {
+                mapRef.fitBounds(bounds, 20);
             });
         });
     };
-    useEffect(handleResize, [map, maps, bounds]);
+    useEffect(handleResize, [mapRef, mapsRef, bounds]);
 
     // setup tracks
     const setupTracks = () => {
-        if (!map) return;
-        map.data.loadGeoJson(tracks);
-        map.data.setStyle({
+        if (!mapRef) return;
+        mapRef.data.loadGeoJson(tracks);
+        mapRef.data.setStyle({
             strokeColor: "#d35400",
             strokeWeight: 1.5,
         });
     };
-    useEffect(setupTracks, [map]);
+    useEffect(setupTracks, [mapRef]);
 
     // setup legend
     const setupLegend = () => {
-        if (!map || !maps) return;
-        map.controls[maps.ControlPosition.LEFT_TOP].push(
+        if (!mapRef || !mapsRef) return;
+        mapRef.controls[mapsRef.ControlPosition.LEFT_TOP].push(
             document.getElementById("map-legend")
         );
     };
-    useEffect(setupLegend, [map, maps]);
+    useEffect(setupLegend, [mapRef, mapsRef]);
+
+    const withStyle = (incidents, style) => {
+        return incidents.map((i) => {
+            return {
+                ...i,
+                iconStyle: style,
+            };
+        });
+    };
+
+    //const loadMarkersHelper = (incidents, color, scale, onClick, markerClass) => {
+        
+
+    const loadMarkersActiveRemediation = () => {
+        if (!mapRef || !mapsRef) return;
+        function anchorFunc(x, y) {
+            return new mapsRef.Point(x, y);
+        }
+        const markers = mapMarkers({
+            mapRef: mapRef,
+            mapsRef: mapsRef,
+            incidents: withStyle(
+                incidentsActiveRemediation,
+                markerIcon({anchorFunc: anchorFunc, color: pinColorActiveRemediation, scale: scaleLgSolo})
+            ),
+            onMarkerClick: handleActiveRemediationClick,
+        });
+        setMarkersActiveRemediation(markers);
+    };
+    useEffect(loadMarkersActiveRemediation, [
+        mapRef,
+        mapsRef,
+        incidentsActiveRemediation,
+        handleActiveRemediationClick,
+    ]);
 
     // Fit map to its bounds after the api is loaded
     const handleApiLoaded = (map, maps) => {
@@ -191,8 +237,7 @@ const MapView = (props) => {
                 }
                 options={createMapOptions}
             >
-                
-                {incidentsHighPriority.map((i) => (
+                {/* {incidentsHighPriority.map((i) => (
                     <MapIncidentPin
                         key={i.lat + i.lng}
                         lat={i.lat}
@@ -221,8 +266,7 @@ const MapView = (props) => {
                         iconStyle={iconStyle}
                         onClick={handleActiveRemediationClick}
                     />
-                ))}
-
+                ))} */}
             </GoogleMapReact>
         </div>
     );
@@ -269,20 +313,32 @@ MapView.defaultProps = {
     ],
     incidentsActiveRemediation: [
         {
+            id: "1",
             lat: 58.591716270539905,
             lng: -94.12363035979969,
+            iconStyle: null,
+            text: null,
+            key: null,
         },
     ],
     incidentsPredicted: [
         {
+            id: "2",
             lat: 54.49216352504018,
             lng: -99.78903833577601,
+            iconStyle: null,
+            text: null,
+            key: null,
         },
     ],
     incidentsHighPriority: [
         {
+            id: "3",
             lat: 55.30693065357311,
             lng: -97.73583304648153,
+            iconStyle: null,
+            text: null,
+            key: null,
         },
     ],
     handleActiveRemediationClick: () => {},
