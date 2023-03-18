@@ -2,7 +2,6 @@ import PropTypes from "prop-types";
 import GoogleMapReact from "google-map-react";
 import MapIncidentPin from "./components/MapIncidentPin";
 import MapLegend from "./components/MapLegend";
-import MapModal from "./components/MapModal";
 import tracks from "./assets/tracks.geojson";
 import { useState } from "react";
 
@@ -17,13 +16,16 @@ const MapView = (props) => {
         incidentsHigh,
         incidentsMid,
         incidentsLow,
+        handleActiveRemediationClick,
+        handlePredictedIncidentClick,
+        handleHighPriorityIncidentClick,
     } = props;
 
     const pinStyleCommon = {
         fontSize: "36px",
         position: "absolute",
         //transform: "translate(-20px, -40px)",
-        transform: "translate(-15px, -15px)",
+        transform: "translate(-18px, -18px)",
     };
 
     const pinStyleLow = {
@@ -133,18 +135,6 @@ const MapView = (props) => {
         };
     };
 
-    const handleActiveRemediationClick = () => {
-        // use assets/Activity2.jpg
-    };
-
-    const handlePredictedIncidentClick = () => {
-        // use assets/Activity3.jpg
-    };
-
-    const handleHighPriorityIncidentClick = () => {
-        // use assets/Activity1.jpg
-    };
-
     return (
         <div className="google-map" style={{ width: width, height: height }}>
             <MapLegend legendItems={legendItems} />
@@ -165,6 +155,7 @@ const MapView = (props) => {
                         lng={i.lng}
                         styleOptions={pinStyleHigh}
                         iconStyle={iconStyle}
+                        onClick={handleHighPriorityIncidentClick}
                     />
                 ))}
                 {incidentsMid.map((i) => (
@@ -174,6 +165,7 @@ const MapView = (props) => {
                         lng={i.lng}
                         styleOptions={pinStyleMid}
                         iconStyle={iconStyle}
+                        onClick={handlePredictedIncidentClick}
                     />
                 ))}
                 {incidentsLow.map((i) => (
@@ -183,6 +175,7 @@ const MapView = (props) => {
                         lng={i.lng}
                         styleOptions={pinStyleLow}
                         iconStyle={iconStyle}
+                        onClick={handleActiveRemediationClick}
                     />
                 ))}
             </GoogleMapReact>
@@ -204,6 +197,9 @@ MapView.propTypes = {
     incidentsLow: PropTypes.arrayOf(PropTypes.shape({})),
     incidentsMid: PropTypes.arrayOf(PropTypes.shape({})),
     incidentsHigh: PropTypes.arrayOf(PropTypes.shape({})),
+    handleActiveRemediationClick: PropTypes.func,
+    handlePredictedIncidentClick: PropTypes.func,
+    handleHighPriorityIncidentClick: PropTypes.func,
 };
 
 MapView.defaultProps = {
@@ -244,6 +240,9 @@ MapView.defaultProps = {
             lng: -97.73583304648153,
         },
     ],
+    handleActiveRemediationClick: () => {},
+    handlePredictedIncidentClick: () => {},
+    handleHighPriorityIncidentClick: () => {},
 };
 
 export default MapView;

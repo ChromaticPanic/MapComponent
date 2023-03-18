@@ -1,4 +1,2 @@
-import Card from './Card';
-import MapComponent from './MapComponent';
-
-export { Card, MapComponent };
+import MapDemoContainer from "./MapDemoContainer/MapDemoContainer"; 
+export { MapDemoContainer };
