@@ -19,7 +19,7 @@ const MapView = (props) => {
         height,
         stations,
         incidentsActiveRemediation,
-        incidentsPredictedIncident,
+        incidentsPredicted,
         incidentsHighPriority,
         handleActiveRemediationClick,
         handlePredictedIncidentClick,
@@ -67,11 +67,17 @@ const MapView = (props) => {
         "openmoji:location-indicator",
     ];
 
+    const zoomNoClusterThreshold = 1;
+
     const [iconStyle, setIconStyle] = useState(iconStyles[0]);
     const [legendItems, setLegendItems] = useState([]);
     const [map, setMap] = useState(null);
     const [maps, setMaps] = useState(null);
     const [bounds, setBounds] = useState(null);
+    const [markersActiveRemediation, setMarkersActiveRemediation] = useState([]);
+    const [markersPredicted, setMarkersPredicted] = useState([]);
+    const [markersHighPriority, setMarkersHighPriority] = useState([]);
+    const [zoomLevel, setZoomLevel] = useState(zoom);
 
     const withoutTransform = (style) => {
         const { transform, position, ...rest } = style;
@@ -108,6 +114,7 @@ const MapView = (props) => {
         });
         setBounds(bounds);
         map.fitBounds(bounds);
+        setZoomLevel(map.getZoom());
     }, [map, maps, stations]);
 
     // Re-center map when resizing the window
@@ -131,12 +138,12 @@ const MapView = (props) => {
     }, [map]);
 
     // setup legend
-    const setupLegend = () => {
+    useEffect(() => {
         if (!map || !maps) return;
         map.controls[maps.ControlPosition.LEFT_TOP].push(
             document.getElementById("map-legend")
         );
-    };
+    }, [map, maps]);
 
     // Fit map to its bounds after the api is loaded
     const handleApiLoaded = (map, maps) => {
@@ -148,9 +155,9 @@ const MapView = (props) => {
         // Bind the resize listener
         //bindResizeListener(map, maps, bounds);
 
-        // setupTracksLayer(map);
+        //setupTracks(map);
 
-        setupLegend();
+        // setupLegend();
     };
 
     const createMapOptions = (maps) => {
@@ -180,7 +187,7 @@ const MapView = (props) => {
                 options={createMapOptions}
             >
                 
-                {/* {incidentsHigh.map((i) => (
+                {incidentsHighPriority.map((i) => (
                     <MapIncidentPin
                         key={i.lat + i.lng}
                         lat={i.lat}
@@ -190,7 +197,7 @@ const MapView = (props) => {
                         onClick={handleHighPriorityIncidentClick}
                     />
                 ))}
-                {incidentsMid.map((i) => (
+                {incidentsPredicted.map((i) => (
                     <MapIncidentPin
                         key={i.lat + i.lng}
                         lat={i.lat}
@@ -200,7 +207,7 @@ const MapView = (props) => {
                         onClick={handlePredictedIncidentClick}
                     />
                 ))}
-                {incidentsLow.map((i) => (
+                {incidentsActiveRemediation.map((i) => (
                     <MapIncidentPin
                         key={i.lat + i.lng}
                         lat={i.lat}
@@ -209,7 +216,7 @@ const MapView = (props) => {
                         iconStyle={iconStyle}
                         onClick={handleActiveRemediationClick}
                     />
-                ))} */}
+                ))}
 
             </GoogleMapReact>
         </div>
