@@ -1,15 +1,9 @@
 import PropTypes from "prop-types";
 import GoogleMapReact from "google-map-react";
-import MapIncidentPin from "./components/MapIncidentPin";
 import MapLegend from "./components/MapLegend";
-import {
-    markerIcon,
-    markerHighPriorityIncident,
-    markerPredictedIncident,
-} from "./components/MapIcons";
-import { mapMarkers } from "./components/MapMarker";
 import tracks from "./assets/tracks.geojson";
 import { useState, useEffect, useMemo } from "react";
+import { useLoadMarkers } from "./hooks";
 
 const MapView = (props) => {
     const {
@@ -158,66 +152,22 @@ const MapView = (props) => {
     };
     useEffect(setupLegend, [mapRef, mapsRef]);
 
-    const withStyle = (incidents, style) => {
-        return incidents.map((i) => {
-            return {
-                ...i,
-                iconStyle: style,
-            };
-        });
-    };
-
-    const useLoadMarkers = (mapRef, mapsRef, incidents, pinColor, scale, handleClick) => {
-        const [markers, setMarkers] = useState([]);
-      
-        useEffect(() => {
-          if (!mapRef || !mapsRef) return;
-          function anchorFunc(x, y) {
-            return new mapsRef.Point(x, y);
-          }
-          const newMarkers = mapMarkers({
-            mapRef: mapRef,
-            mapsRef: mapsRef,
-            incidents: withStyle(
-              incidents,
-              markerIcon({ anchorFunc: anchorFunc, color: pinColor, scale: scale })
-            ),
-            onMarkerClick: handleClick,
-          });
-          setMarkers(newMarkers);
-        }, [mapRef, mapsRef, incidents, pinColor, scale, handleClick]);
-      
-        return [markers, setMarkers];
-      };
-      
     const [markersActiveRemediation, setMarkersActiveRemediation] = useLoadMarkers(mapRef, mapsRef, incidentsActiveRemediation, pinColorActiveRemediation, scaleSmSolo, handleActiveRemediationClick);
     const [markersPredictedIncident, setMarkersPredictedIncident] = useLoadMarkers(mapRef, mapsRef, incidentsPredicted, pinColorPredictedIncident, scaleSmSolo, handlePredictedIncidentClick);  
     const [markersHighPriorityIncident, setMarkersHighPriorityIncident] = useLoadMarkers(mapRef, mapsRef, incidentsHighPriority, pinColorHighPriorityIncident, scaleSmSolo, handleHighPriorityIncidentClick);
-        
 
-    // const loadMarkersActiveRemediation = () => {
-    //     if (!mapRef || !mapsRef) return;
-    //     function anchorFunc(x, y) {
-    //         return new mapsRef.Point(x, y);
-    //     }
-    //     const markers = mapMarkers({
-    //         mapRef: mapRef,
-    //         mapsRef: mapsRef,
-    //         incidents: withStyle(
-    //             incidentsActiveRemediation,
-    //             markerIcon({anchorFunc: anchorFunc, color: pinColorActiveRemediation, scale: scaleLgSolo})
-    //         ),
-    //         onMarkerClick: handleActiveRemediationClick,
-    //     });
-    //     setMarkersActiveRemediation(markers);
-    // };
-    // useEffect(loadMarkersActiveRemediation, [
-    //     mapRef,
-    //     mapsRef,
-    //     incidentsActiveRemediation,
-    //     handleActiveRemediationClick,
-    // ]);
+    const handleHideMarkers = (markers) => {
+        markers.forEach((marker) => {
+            marker.setMap(null);
+        });
+    };
 
+    const handleShowMarkers = (markers) => {
+        markers.forEach((marker) => {
+            marker.setMap(mapRef);
+        });
+    };
+    
     // Fit map to its bounds after the api is loaded
     const handleApiLoaded = (map, maps) => {
         setMap(map);
