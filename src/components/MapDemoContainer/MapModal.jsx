@@ -14,6 +14,7 @@ const MapModal = (props) => {
   const handleCloseModal = () => {
     setShowModal(false);
   };
+  const imgWidth = width === '400px' ? width : '100%';
 
   return (
     <div>
@@ -32,10 +33,10 @@ const MapModal = (props) => {
       >
         <img
           src={image}
-          style={{ maxWidth: '100%', maxHeight: '100%' }}
-          alt="Embedded thing"
+          style={{ maxWidth: '100%', maxHeight: '100%', width: imgWidth }}
+          alt="Activity"
+          onClick={handleCloseModal}
         />
-        <button onClick={handleCloseModal}>Close Modal</button>
       </ReactModal>
     </div>
   );

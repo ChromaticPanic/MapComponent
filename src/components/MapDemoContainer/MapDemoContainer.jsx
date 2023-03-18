@@ -25,8 +25,8 @@ const MapDemoContainer = () => {
     const handleActiveRemediationClick = () => {
         // use assets/Activity2.jpg
         setImage(img2);
-        setModalWidth(400);
-        setModalHeight(600);
+        setModalWidth(1920);
+        setModalHeight(1080);
         setShowModal(true);
     };
 
@@ -41,8 +41,8 @@ const MapDemoContainer = () => {
     const handleHighPriorityIncidentClick = () => {
         // use assets/Activity1.jpg
         setImage(img1);
-        setModalWidth(1920);
-        setModalHeight(1080);
+        setModalWidth(400);
+        setModalHeight(600);
         setShowModal(true);
     };
 
