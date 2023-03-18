@@ -10,16 +10,18 @@ export const MapMarkers = (props) => {
         return new maps.Marker({position: {lat, lng}, map, icon: iconStyle, title: text, key});
     });
 
-    mapMarkers.forEach((marker) => {
-        marker.addListener("click", () => {
-            onMarkerClick(marker);
-        });
-        marker.addListener("mouseover", () => {
-            onMarkerMouseOver(marker);
-        });
-        marker.addListener("mouseout", () => {
-            onMarkerMouseOut(marker);
-        });
-    });
+    return mapMarkers;
+
+    // mapMarkers.forEach((marker) => {
+    //     marker.addListener("click", () => {
+    //         onMarkerClick(marker);
+    //     });
+    //     marker.addListener("mouseover", () => {
+    //         onMarkerMouseOver(marker);
+    //     });
+    //     marker.addListener("mouseout", () => {
+    //         onMarkerMouseOut(marker);
+    //     });
+    // });
 }
 

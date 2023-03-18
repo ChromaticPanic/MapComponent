@@ -84,6 +84,7 @@ const MapView = (props) => {
         return rest;
     };
 
+    // will probably get removed
     useEffect(() => {
         setLegendItems([
             {
@@ -105,7 +106,7 @@ const MapView = (props) => {
     }, [iconStyle, pinStyleHigh, pinStyleLow, pinStyleMid]);
 
     // Set map bounds based on list of stations
-    useEffect(() => {
+    const setupMap = () => {
         if (!map || !maps) return;
         const bounds = new maps.LatLngBounds();
 
@@ -115,35 +116,39 @@ const MapView = (props) => {
         setBounds(bounds);
         map.fitBounds(bounds);
         setZoomLevel(map.getZoom());
-    }, [map, maps, stations]);
+    };
+    useEffect(setupMap, [map, maps, stations]);
 
     // Re-center map when resizing the window
-    useEffect(() => {
+    const handleResize = () => {
         if (!map || !maps) return;
         maps.event.addDomListenerOnce(map, "idle", () => {
             maps.event.addDomListener(window, "resize", () => {
                 map.fitBounds(bounds, 20);
             });
         });
-    }, [map, maps, bounds]);
+    };
+    useEffect(handleResize, [map, maps, bounds]);
 
     // setup tracks
-    useEffect(() => {
+    const setupTracks = () => {
         if (!map) return;
         map.data.loadGeoJson(tracks);
         map.data.setStyle({
             strokeColor: "#d35400",
             strokeWeight: 1.5,
         });
-    }, [map]);
+    };
+    useEffect(setupTracks, [map]);
 
     // setup legend
-    useEffect(() => {
+    const setupLegend = () => {
         if (!map || !maps) return;
         map.controls[maps.ControlPosition.LEFT_TOP].push(
             document.getElementById("map-legend")
         );
-    }, [map, maps]);
+    };
+    useEffect(setupLegend, [map, maps]);
 
     // Fit map to its bounds after the api is loaded
     const handleApiLoaded = (map, maps) => {
