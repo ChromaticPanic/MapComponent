@@ -3,7 +3,6 @@ import GoogleMapReact from "google-map-react";
 import MapIncidentPin from "./components/MapIncidentPin";
 import MapLegend from "./components/MapLegend";
 import tracks from "./assets/tracks.geojson";
-import MarkerClusterer from '@google/markerclusterer'
 import { useState } from "react";
 
 const MapView = (props) => {
