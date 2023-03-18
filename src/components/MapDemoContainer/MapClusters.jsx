@@ -19,6 +19,11 @@ export const incidentsActiveRemediation = [
         lat: 57.554038865440475,
         lng: -94.20672108256869
     },
+    {
+        id: "5",
+        lat: 58.591716270539905,
+        lng: -94.12363035979969
+    },
 ];
 
 export const incidentsPredicted = [
@@ -42,6 +47,11 @@ export const incidentsPredicted = [
         lat: 56.55220045655689,
         lng: -94.0687469762845
     },
+    {
+        id: "5",
+        lat: 54.49216352504018,
+        lng: -99.78903833577601
+    },
 ];
 
 export const incidentsHighPriority = [
@@ -64,6 +74,11 @@ export const incidentsHighPriority = [
         id: "4",
         lat: 56.72090375433548,
         lng: -94.07474832487554
+    },
+    {
+        id: "5",
+        lat: 55.30693065357311,
+        lng: -97.73583304648153,
     },
 
 ];
