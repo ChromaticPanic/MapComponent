@@ -1,8 +1,9 @@
 import PropTypes from "prop-types";
 import GoogleMapReact from "google-map-react";
-import MapIncidentPin from "./MapIncidentPin";
-import MapLegend from "./MapLegend";
-import tracks from "./tracks.geojson";
+import MapIncidentPin from "./components/MapIncidentPin";
+import MapLegend from "./components/MapLegend";
+import MapModal from "./components/MapModal";
+import tracks from "./assets/tracks.geojson";
 import { useState } from "react";
 
 const MapView = (props) => {
@@ -130,6 +131,18 @@ const MapView = (props) => {
             },
             scrollwheel: true,
         };
+    };
+
+    const handleActiveRemediationClick = () => {
+        // use assets/Activity2.jpg
+    };
+
+    const handlePredictedIncidentClick = () => {
+        // use assets/Activity3.jpg
+    };
+
+    const handleHighPriorityIncidentClick = () => {
+        // use assets/Activity1.jpg
     };
 
     return (
