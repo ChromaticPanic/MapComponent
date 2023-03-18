@@ -187,7 +187,7 @@ const MapView = (props) => {
                 options={createMapOptions}
             >
                 
-                {incidentsHighPriority.map((i) => (
+                {/* {incidentsHighPriority.map((i) => (
                     <MapIncidentPin
                         key={i.lat + i.lng}
                         lat={i.lat}
@@ -216,7 +216,7 @@ const MapView = (props) => {
                         iconStyle={iconStyle}
                         onClick={handleActiveRemediationClick}
                     />
-                ))}
+                ))} */}
 
             </GoogleMapReact>
         </div>

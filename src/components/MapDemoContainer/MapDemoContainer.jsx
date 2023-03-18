@@ -6,12 +6,12 @@ import {
     GridItem,
     Card,
     useDisclosure,
-    AbsoluteCenter,
     ChakraProvider,
 } from "@chakra-ui/react";
 import img1 from "./Activity1.jpg";
 import img2 from "./Activity2.jpg";
 import img3 from "./Activity3.jpg";
+import { incidentsActiveRemediation, incidentsHighPriority, incidentsPredicted } from "./MapClusters";
 
 const solo = true;
 
@@ -86,6 +86,9 @@ const MapDemoContainer = () => {
                         handlePredictedIncidentClick={
                             handlePredictedIncidentClick
                         }
+                        incidentsActiveRemediation={incidentsActiveRemediation}
+                        incidentsHighPriority={incidentsHighPriority}
+                        incidentsPredicted={incidentsPredicted}
                     />
                 </div>
             ) : (
