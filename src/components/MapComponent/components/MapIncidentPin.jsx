@@ -54,7 +54,6 @@ MapIncidentPin.propTypes = {
     onClick: PropTypes.func,
     text: PropTypes.string,
     iconStyle: PropTypes.string.isRequired,
-    key: PropTypes.string.isRequired,
 };
 
 export default MapIncidentPin;

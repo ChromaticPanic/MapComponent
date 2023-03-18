@@ -1,7 +1,14 @@
 import MapView from "../MapComponent/MapView";
 import MapModal from "./MapModal";
-import { useState } from "react";
-import { Grid, GridItem, Card } from "@chakra-ui/react";
+import { useState, useEffect } from "react";
+import {
+    Grid,
+    GridItem,
+    Card,
+    useDisclosure,
+    AbsoluteCenter,
+    ChakraProvider,
+} from "@chakra-ui/react";
 import img1 from "./Activity1.jpg";
 import img2 from "./Activity2.jpg";
 import img3 from "./Activity3.jpg";
@@ -17,6 +24,7 @@ const height = "100vh";
 const width = "100%";
 
 const MapDemoContainer = () => {
+    const { isOpen, onOpen, onClose } = useDisclosure();
     const [image, setImage] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [modalWidth, setModalWidth] = useState(0);
@@ -46,21 +54,28 @@ const MapDemoContainer = () => {
         setShowModal(true);
     };
 
+    useEffect(() => {
+        if (showModal) {
+            onOpen();
+        }
+    }, [onOpen, showModal]);
+
     return (
         <>
-            {showModal ? (
+            <ChakraProvider>
                 <MapModal
                     image={image}
                     width={String(modalWidth) + "px"}
                     height={String(modalHeight) + "px"}
                     setShowModal={setShowModal}
-                    showModal={showModal}
+                    isOpen={isOpen}
+                    onClose={onClose}
                 />
-            ) : solo ? (
+            </ChakraProvider>
+            {solo ? (
                 <div id="map-component">
                     <MapView
                         center={center}
-                        height={height}
                         width={width}
                         handleActiveRemediationClick={
                             handleActiveRemediationClick
