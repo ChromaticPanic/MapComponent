@@ -2,8 +2,13 @@ import PropTypes from "prop-types";
 import GoogleMapReact from "google-map-react";
 import MapIncidentPin from "./components/MapIncidentPin";
 import MapLegend from "./components/MapLegend";
+import {
+    MarkerActiveRemediation,
+    MarkerHighPriorityIncident,
+    MarkerPredictedIncident,
+} from "./components/MapIcons";
 import tracks from "./assets/tracks.geojson";
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 
 const MapView = (props) => {
     const {
@@ -13,35 +18,43 @@ const MapView = (props) => {
         width,
         height,
         stations,
-        incidentsHigh,
-        incidentsMid,
-        incidentsLow,
+        incidentsActiveRemediation,
+        incidentsPredictedIncident,
+        incidentsHighPriority,
         handleActiveRemediationClick,
         handlePredictedIncidentClick,
         handleHighPriorityIncidentClick,
     } = props;
 
-    const pinStyleCommon = {
-        fontSize: "36px",
-        position: "absolute",
-        //transform: "translate(-20px, -40px)",
-        transform: "translate(-18px, -18px)",
-    };
+    const pinStyleCommon = useMemo(() => {
+        return {
+            fontSize: "36px",
+            position: "absolute",
+            //transform: "translate(-20px, -40px)",
+            transform: "translate(-18px, -18px)",
+        };
+    }, []);
 
-    const pinStyleLow = {
-        ...pinStyleCommon,
-        color: "blue",
-    };
+    const pinStyleLow = useMemo(() => {
+        return {
+            ...pinStyleCommon,
+            color: "blue",
+        };
+    }, [pinStyleCommon]);
 
-    const pinStyleMid = {
-        ...pinStyleCommon,
-        color: "orange",
-    };
+    const pinStyleMid = useMemo(() => {
+        return {
+            ...pinStyleCommon,
+            color: "orange",
+        };
+    }, [pinStyleCommon]);
 
-    const pinStyleHigh = {
-        ...pinStyleCommon,
-        color: "red",
-    };
+    const pinStyleHigh = useMemo(() => {
+        return {
+            ...pinStyleCommon,
+            color: "red",
+        };
+    }, [pinStyleCommon]);
 
     const iconStyles = [
         "fluent-mdl2:location-dot",
@@ -55,71 +68,89 @@ const MapView = (props) => {
     ];
 
     const [iconStyle, setIconStyle] = useState(iconStyles[0]);
+    const [legendItems, setLegendItems] = useState([]);
+    const [map, setMap] = useState(null);
+    const [maps, setMaps] = useState(null);
+    const [bounds, setBounds] = useState(null);
 
     const withoutTransform = (style) => {
         const { transform, position, ...rest } = style;
         return rest;
     };
 
-    const legendItems = [
-        {
-            name: "Active Remediation",
-            iconStyle: iconStyle,
-            styleOptions: withoutTransform(pinStyleLow),
-        },
-        {
-            name: "Predicted Incident",
-            iconStyle: iconStyle,
-            styleOptions: withoutTransform(pinStyleMid),
-        },
-        {
-            name: "High Priority Incident",
-            iconStyle: iconStyle,
-            styleOptions: withoutTransform(pinStyleHigh),
-        },
-    ];
+    useEffect(() => {
+        setLegendItems([
+            {
+                name: "Active Remediation",
+                iconStyle: iconStyle,
+                styleOptions: withoutTransform(pinStyleLow),
+            },
+            {
+                name: "Predicted Incident",
+                iconStyle: iconStyle,
+                styleOptions: withoutTransform(pinStyleMid),
+            },
+            {
+                name: "High Priority Incident",
+                iconStyle: iconStyle,
+                styleOptions: withoutTransform(pinStyleHigh),
+            },
+        ]);
+    }, [iconStyle, pinStyleHigh, pinStyleLow, pinStyleMid]);
 
-    // Return map bounds based on list of stations
-    const getMapBounds = (map, maps, stations) => {
+    // Set map bounds based on list of stations
+    useEffect(() => {
+        if (!map || !maps) return;
         const bounds = new maps.LatLngBounds();
 
         stations.forEach((s) => {
             bounds.extend(new maps.LatLng(s.lat, s.lng));
         });
-        return bounds;
-    };
+        setBounds(bounds);
+        map.fitBounds(bounds);
+    }, [map, maps, stations]);
 
     // Re-center map when resizing the window
-    const bindResizeListener = (map, maps, bounds) => {
+    useEffect(() => {
+        if (!map || !maps) return;
         maps.event.addDomListenerOnce(map, "idle", () => {
             maps.event.addDomListener(window, "resize", () => {
-                map.fitBounds(bounds);
+                map.fitBounds(bounds, 20);
             });
         });
-    };
+    }, [map, maps, bounds]);
 
-    const setupTracksLayer = (map) => {
+    // setup tracks
+    useEffect(() => {
+        if (!map) return;
         map.data.loadGeoJson(tracks);
         map.data.setStyle({
             strokeColor: "#d35400",
             strokeWeight: 1.5,
         });
-    };
+    }, [map]);
 
-    // Fit map to its bounds after the api is loaded
-    const handleApiLoaded = (map, maps, stations) => {
-        // Get bounds by our places
-        const bounds = getMapBounds(map, maps, stations);
-        // Fit map to bounds
-        map.fitBounds(bounds);
-        // Bind the resize listener
-        bindResizeListener(map, maps, bounds);
-
+    // setup legend
+    const setupLegend = () => {
+        if (!map || !maps) return;
         map.controls[maps.ControlPosition.LEFT_TOP].push(
             document.getElementById("map-legend")
         );
+    };
 
-        setupTracksLayer(map);
+    // Fit map to its bounds after the api is loaded
+    const handleApiLoaded = (map, maps) => {
+        setMap(map);
+        setMaps(maps);
+        // Get bounds by our places
+        //const bounds = getMapBounds(map, maps, stations);
+        // Fit map to bounds
+        // Bind the resize listener
+        //bindResizeListener(map, maps, bounds);
+
+        // setupTracksLayer(map);
+
+        setupLegend();
     };
 
     const createMapOptions = (maps) => {
@@ -137,18 +168,19 @@ const MapView = (props) => {
 
     return (
         <div className="google-map" style={{ width: width, height: height }}>
-            <MapLegend legendItems={legendItems} />
+            <MapLegend legendItems={legendItems} bounds={bounds} />
             <GoogleMapReact
                 bootstrapURLKeys={{ key: apiKey }}
                 defaultCenter={location}
                 defaultZoom={zoom}
                 yesIWantToUseGoogleMapApiInternals
                 onGoogleApiLoaded={({ map, maps }) =>
-                    handleApiLoaded(map, maps, stations)
+                    handleApiLoaded(map, maps)
                 }
                 options={createMapOptions}
             >
-                {incidentsHigh.map((i) => (
+                
+                {/* {incidentsHigh.map((i) => (
                     <MapIncidentPin
                         key={i.lat + i.lng}
                         lat={i.lat}
@@ -177,7 +209,8 @@ const MapView = (props) => {
                         iconStyle={iconStyle}
                         onClick={handleActiveRemediationClick}
                     />
-                ))}
+                ))} */}
+
             </GoogleMapReact>
         </div>
     );
@@ -194,17 +227,17 @@ MapView.propTypes = {
     zoom: PropTypes.number,
     tracks: PropTypes.arrayOf(PropTypes.shape({})),
     stations: PropTypes.arrayOf(PropTypes.shape({})),
-    incidentsLow: PropTypes.arrayOf(PropTypes.shape({})),
-    incidentsMid: PropTypes.arrayOf(PropTypes.shape({})),
-    incidentsHigh: PropTypes.arrayOf(PropTypes.shape({})),
+    incidentsActiveRemediation: PropTypes.arrayOf(PropTypes.shape({})),
+    incidentsPredicted: PropTypes.arrayOf(PropTypes.shape({})),
+    incidentsHighPriority: PropTypes.arrayOf(PropTypes.shape({})),
     handleActiveRemediationClick: PropTypes.func,
     handlePredictedIncidentClick: PropTypes.func,
     handleHighPriorityIncidentClick: PropTypes.func,
 };
 
 MapView.defaultProps = {
-    width: 1920,
-    height: 1080,
+    width: "100%",
+    height: "1080px",
     location: {
         lat: 56.59638974465631,
         lng: -96.64761357599087,
@@ -214,27 +247,27 @@ MapView.defaultProps = {
     tracks: [],
     stations: [
         {
-            lat: 53.87655945167964,
-            lng: -101.20489774881213,
+            lat: 53.58840162560527,
+            lng: -101.40858907838962,
         },
         {
             lat: 58.80494814618657,
             lng: -94.14294594619656,
         },
     ],
-    incidentsLow: [
+    incidentsActiveRemediation: [
         {
             lat: 58.591716270539905,
             lng: -94.12363035979969,
         },
     ],
-    incidentsMid: [
+    incidentsPredicted: [
         {
             lat: 54.49216352504018,
             lng: -99.78903833577601,
         },
     ],
-    incidentsHigh: [
+    incidentsHighPriority: [
         {
             lat: 55.30693065357311,
             lng: -97.73583304648153,
