@@ -75,12 +75,8 @@ const MapView = (props) => {
     const [mapRef, setMap] = useState(null);
     const [mapsRef, setMaps] = useState(null);
     const [bounds, setBounds] = useState(null);
-    const [markersActiveRemediation, setMarkersActiveRemediation] = useState(
-        []
-    );
-    const [markersPredicted, setMarkersPredicted] = useState([]);
-    const [markersHighPriority, setMarkersHighPriority] = useState([]);
     const [zoomLevel, setZoomLevel] = useState(zoom);
+    const [updatedIncidents, setUpdatedIncidents] = useState([]);
 
     const withoutTransform = (style) => {
         const { transform, position, ...rest } = style;
@@ -91,6 +87,7 @@ const MapView = (props) => {
     const scaleMdSolo = 0.015;
     const scaleLgSolo = 0.025;
     const scaleLgCluster = 0.05;
+    const scaleXlCluster = 0.1;
     const pinColorActiveRemediation = "blue";
     const pinColorPredictedIncident = "orange";
     const pinColorHighPriorityIncident = "red";
@@ -170,31 +167,56 @@ const MapView = (props) => {
         });
     };
 
-    //const loadMarkersHelper = (incidents, color, scale, onClick, markerClass) => {
-        
-
-    const loadMarkersActiveRemediation = () => {
-        if (!mapRef || !mapsRef) return;
-        function anchorFunc(x, y) {
+    const useLoadMarkers = (mapRef, mapsRef, incidents, pinColor, scale, handleClick) => {
+        const [markers, setMarkers] = useState([]);
+      
+        useEffect(() => {
+          if (!mapRef || !mapsRef) return;
+          function anchorFunc(x, y) {
             return new mapsRef.Point(x, y);
-        }
-        const markers = mapMarkers({
+          }
+          const newMarkers = mapMarkers({
             mapRef: mapRef,
             mapsRef: mapsRef,
             incidents: withStyle(
-                incidentsActiveRemediation,
-                markerIcon({anchorFunc: anchorFunc, color: pinColorActiveRemediation, scale: scaleLgSolo})
+              incidents,
+              markerIcon({ anchorFunc: anchorFunc, color: pinColor, scale: scale })
             ),
-            onMarkerClick: handleActiveRemediationClick,
-        });
-        setMarkersActiveRemediation(markers);
-    };
-    useEffect(loadMarkersActiveRemediation, [
-        mapRef,
-        mapsRef,
-        incidentsActiveRemediation,
-        handleActiveRemediationClick,
-    ]);
+            onMarkerClick: handleClick,
+          });
+          setMarkers(newMarkers);
+        }, [mapRef, mapsRef, incidents, pinColor, scale, handleClick]);
+      
+        return [markers, setMarkers];
+      };
+      
+    const [markersActiveRemediation, setMarkersActiveRemediation] = useLoadMarkers(mapRef, mapsRef, incidentsActiveRemediation, pinColorActiveRemediation, scaleSmSolo, handleActiveRemediationClick);
+    const [markersPredictedIncident, setMarkersPredictedIncident] = useLoadMarkers(mapRef, mapsRef, incidentsPredicted, pinColorPredictedIncident, scaleSmSolo, handlePredictedIncidentClick);  
+    const [markersHighPriorityIncident, setMarkersHighPriorityIncident] = useLoadMarkers(mapRef, mapsRef, incidentsHighPriority, pinColorHighPriorityIncident, scaleSmSolo, handleHighPriorityIncidentClick);
+        
+
+    // const loadMarkersActiveRemediation = () => {
+    //     if (!mapRef || !mapsRef) return;
+    //     function anchorFunc(x, y) {
+    //         return new mapsRef.Point(x, y);
+    //     }
+    //     const markers = mapMarkers({
+    //         mapRef: mapRef,
+    //         mapsRef: mapsRef,
+    //         incidents: withStyle(
+    //             incidentsActiveRemediation,
+    //             markerIcon({anchorFunc: anchorFunc, color: pinColorActiveRemediation, scale: scaleLgSolo})
+    //         ),
+    //         onMarkerClick: handleActiveRemediationClick,
+    //     });
+    //     setMarkersActiveRemediation(markers);
+    // };
+    // useEffect(loadMarkersActiveRemediation, [
+    //     mapRef,
+    //     mapsRef,
+    //     incidentsActiveRemediation,
+    //     handleActiveRemediationClick,
+    // ]);
 
     // Fit map to its bounds after the api is loaded
     const handleApiLoaded = (map, maps) => {
