@@ -1,11 +1,9 @@
-import Draggable from "react-draggable";
-import { useState } from "react";
+
 import {
     defaultControlStyle,
     pinColorActiveRemediation,
     pinColorHighPriorityIncident,
     pinColorPredictedIncident,
-    colorSubAll,
     colorSubFlinFlon,
     colorSubThePas,
     colorSubWekusko,
@@ -26,28 +24,22 @@ const MapControlView = (props) => {
         active,
         predicted,
         priority,
-        subAll,
         subFlinFlon,
         subThePas,
         subWekusko,
         subThicket,
         subHerchmer,
         subThompson,
-        handleClickActiveOn,
-        handleClickActiveOff,
-        handleClickPredictedOn,
-        handleClickPredictedOff,
-        handleClickPriorityOn,
-        handleClickPriorityOff,
-        handleClickSubAllOn,
-        handleClickSubFlinFlonOn,
-        handleClickSubThePasOn,
-        handleClickSubWekuskoOn,
-        handleClickSubThicketOn,
-        handleClickSubHerchmerOn,
-        handleClickSubThompsonOn,
+        handleClickActive,
+        handleClickPredicted,
+        handleClickPriority,
+        handleClickSubFlinFlon,
+        handleClickSubThePas,
+        handleClickSubWekusko,
+        handleClickSubThicket,
+        handleClickSubHerchmer,
+        handleClickSubThompson,
     } = props;
-    const [controlStyle, setControlStyle] = useState(defaultControlStyle);
     const incidentIconSize = 16;
     const railIconSize = 26;
 
@@ -55,7 +47,7 @@ const MapControlView = (props) => {
         <div>
             <Box
                 id="map-controls"
-                style={controlStyle}
+                style={defaultControlStyle}
                 bg={"white"}
                 overflowX={"auto"}
             >
@@ -82,8 +74,8 @@ const MapControlView = (props) => {
                                 isActive={active}
                                 onClick={
                                     active
-                                        ? handleClickActiveOff
-                                        : handleClickActiveOn
+                                        ? handleClickActive(false)
+                                        : handleClickActive(true)
                                 }
                             >
                                 Active Remediation
@@ -108,8 +100,8 @@ const MapControlView = (props) => {
                                 isActive={predicted}
                                 onClick={
                                     predicted
-                                        ? handleClickPredictedOff
-                                        : handleClickPredictedOn
+                                        ? handleClickPredicted(false)
+                                        : handleClickPredicted(true)
                                 }
                             >
                                 Predicted Incident
@@ -134,8 +126,8 @@ const MapControlView = (props) => {
                                 isActive={priority}
                                 onClick={
                                     priority
-                                        ? handleClickPriorityOff
-                                        : handleClickPriorityOn
+                                        ? handleClickPriority(false)
+                                        : handleClickPriority(true)
                                 }
                             >
                                 High Priority
@@ -159,6 +151,7 @@ const MapControlView = (props) => {
                                 variant="solid"
                                 borderColor={colorSubFlinFlon}
                                 isActive={subFlinFlon}
+                                onClick={ subFlinFlon ? handleClickSubFlinFlon(false) : handleClickSubFlinFlon(true) }
                             >
                                 Flin Flon
                             </Button>
@@ -179,6 +172,7 @@ const MapControlView = (props) => {
                                 variant="solid"
                                 borderColor={colorSubThePas}
                                 isActive={subThePas}
+                                onClick={ subThePas ? handleClickSubThePas(false) : handleClickSubThePas(true) }
                             >
                                 The Pas
                             </Button>
@@ -199,6 +193,7 @@ const MapControlView = (props) => {
                                 variant="solid"
                                 borderColor={colorSubWekusko}
                                 isActive={subWekusko}
+                                onClick={ subWekusko ? handleClickSubWekusko(false) : handleClickSubWekusko(true) }
                             >
                                 Wekusko
                             </Button>
@@ -219,6 +214,7 @@ const MapControlView = (props) => {
                                 variant="solid"
                                 borderColor={colorSubThicket}
                                 isActive={subThicket}
+                                onClick={ subThicket ? handleClickSubThicket(false) : handleClickSubThicket(true) }
                             >
                                 Thicket
                             </Button>
@@ -239,6 +235,7 @@ const MapControlView = (props) => {
                                 variant="solid"
                                 borderColor={colorSubHerchmer}
                                 isActive={subHerchmer}
+                                onClick={ subHerchmer ? handleClickSubHerchmer(false) : handleClickSubHerchmer(true) }
                             >
                                 Herchmer
                             </Button>
@@ -259,6 +256,7 @@ const MapControlView = (props) => {
                                 variant="solid"
                                 borderColor={colorSubThompson}
                                 isActive={subThompson}
+                                onClick={ subThompson ? handleClickSubThompson(false) : handleClickSubThompson(true) }
                             >
                                 Thompson
                             </Button>
