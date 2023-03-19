@@ -110,20 +110,21 @@ const MapView = (props) => {
     useEffect(setupTracks, [mapRef]);
 
     // setup legend
-    const setupLegend = () => {
-        if (!mapRef || !mapsRef) return;
-        mapRef.controls[mapsRef.ControlPosition.LEFT_TOP].push(
-            document.getElementById("map-legend")
-        );
-    };
-    useEffect(setupLegend, [mapRef, mapsRef]);
+    // const setupLegend = () => {
+    //     if (!mapRef || !mapsRef) return;
+    //     mapRef.controls[mapsRef.ControlPosition.LEFT_BOTTOM].push(
+    //         document.getElementById("map-legend")
+    //     );
+    // };
+    // useEffect(setupLegend, [mapRef, mapsRef]);
 
-    const setupControls = () => {
-        if (!mapRef || !mapsRef) return;
-        mapRef.controls[mapsRef.ControlPosition.CENTER_TOP].push(
-            document.getElementById("map-controls")
-        );
-    };
+    // const setupControls = () => {
+    //     if (!mapRef || !mapsRef) return;
+    //     mapRef.controls[mapsRef.ControlPosition.LEFT_BOTTOM].push(
+    //         document.getElementById("map-controls")
+    //     );
+    // };
+    // useEffect(setupControls, [mapRef, mapsRef]);
 
     const [markersActiveRemediation, setMarkersActiveRemediation] =
         useLoadMarkers(
@@ -211,16 +212,20 @@ const MapView = (props) => {
             mapTypeControl: true,
             mapTypeId: maps.MapTypeId.HYBRID,
             mapTypeControlOptions: {
-                style: maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                style: maps.MapTypeControlStyle.DROPDOWN_MENU,
                 position: maps.ControlPosition.TOP_RIGHT,
             },
+            zoomControlOptions: {
+                position: maps.ControlPosition.RIGHT_CENTER,
+            },
+            scaleControl: true,
             scrollwheel: true,
             fullscreenControl: false,
         };
     };
 
     return (
-        <div className="google-map" style={{ width: width, height: height }}>
+        <div className="google-map" style={{ width: width, height: height, position: "relative"}}>
             <MapControl />
             <GoogleMapReact
                 bootstrapURLKeys={{ key: apiKey }}

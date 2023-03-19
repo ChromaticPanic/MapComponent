@@ -1,17 +1,15 @@
 import MapView from "../MapComponent/MapView";
 import MapModal from "./MapModal";
 import { useState, useEffect } from "react";
-import {
-    Grid,
-    GridItem,
-    Card,
-    useDisclosure,
-    ChakraProvider,
-} from "@chakra-ui/react";
+import { Grid, GridItem, Card, useDisclosure } from "@chakra-ui/react";
 import img1 from "./Activity1.jpg";
 import img2 from "./Activity2.jpg";
 import img3 from "./Activity3.jpg";
-import { incidentsActiveRemediation, incidentsHighPriority, incidentsPredicted } from "./MapClusters";
+import {
+    incidentsActiveRemediation,
+    incidentsHighPriority,
+    incidentsPredicted,
+} from "./MapClusters";
 
 const solo = true;
 
@@ -62,16 +60,15 @@ const MapDemoContainer = () => {
 
     return (
         <>
-            <ChakraProvider>
-                <MapModal
-                    image={image}
-                    width={String(modalWidth) + "px"}
-                    height={String(modalHeight) + "px"}
-                    setShowModal={setShowModal}
-                    isOpen={isOpen}
-                    onClose={onClose}
-                />
-            </ChakraProvider>
+            <MapModal
+                image={image}
+                width={String(modalWidth) + "px"}
+                height={String(modalHeight) + "px"}
+                setShowModal={setShowModal}
+                isOpen={isOpen}
+                onClose={onClose}
+            />
+
             {solo ? (
                 <div id="map-component">
                     <MapView

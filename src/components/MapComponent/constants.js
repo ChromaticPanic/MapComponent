@@ -41,12 +41,15 @@ export const defaultLegendStyle = {
     position: "absolute",
 };
 export const defaultControlStyle = {
-    background: "#ffffff",
+    // background: "black",
     padding: "5px",
-    margin: "40px",
+    //margin: "40px",
+    width: "100%",
     border: "5px solid",
     borderColor: "#85929e",
     borderRadius: "10px",
+    bottom: "0px",
+    left: "0px",
     zIndex: "1",
     position: "absolute",
 };
