@@ -81,6 +81,7 @@ const MapView = (props) => {
     const scaleSmSolo = 0.0125;
     const scaleMdSolo = 0.015;
     const scaleLgSolo = 0.025;
+    const scaleMdCluster = 0.035;
     const scaleLgCluster = 0.05;
     const scaleXlCluster = 0.1;
     const pinColorActiveRemediation = "blue";
@@ -159,7 +160,7 @@ const MapView = (props) => {
             mapsRef,
             incidentsActiveRemediation,
             pinColorActiveRemediation,
-            scaleSmSolo,
+            scaleLgSolo,
             handleActiveRemediationClick
         );
     const [markersPredictedIncident, setMarkersPredictedIncident] =
@@ -168,7 +169,7 @@ const MapView = (props) => {
             mapsRef,
             incidentsPredicted,
             pinColorPredictedIncident,
-            scaleSmSolo,
+            scaleLgSolo,
             handlePredictedIncidentClick
         );
     const [markersHighPriorityIncident, setMarkersHighPriorityIncident] =
@@ -177,24 +178,42 @@ const MapView = (props) => {
             mapsRef,
             incidentsHighPriority,
             pinColorHighPriorityIncident,
-            scaleSmSolo,
+            scaleLgSolo,
             handleHighPriorityIncidentClick
         );
 
     const [
         markersActiveRemediationCluster,
         setMarkersActiveRemediationCluster,
-    ] = useClusterer(mapRef, markersActiveRemediation);
+    ] = useClusterer(
+        mapRef,
+        mapsRef,
+        markersActiveRemediation,
+        pinColorActiveRemediation,
+        scaleMdCluster
+    );
 
     const [
         markersPredictedIncidentCluster,
         setMarkersPredictedIncidentCluster,
-    ] = useClusterer(mapRef, markersPredictedIncident);
+    ] = useClusterer(
+        mapRef,
+        mapsRef,
+        markersPredictedIncident,
+        pinColorPredictedIncident,
+        scaleMdCluster
+    );
 
     const [
         markersHighPriorityIncidentCluster,
         setMarkersHighPriorityIncidentCluster,
-    ] = useClusterer(mapRef, markersHighPriorityIncident);
+    ] = useClusterer(
+        mapRef,
+        mapsRef,
+        markersHighPriorityIncident,
+        pinColorHighPriorityIncident,
+        scaleMdCluster
+    );
 
     const handleHideMarkers = (markers) => {
         markers.forEach((marker) => {
