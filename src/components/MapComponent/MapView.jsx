@@ -4,6 +4,7 @@ import MapLegend from "./components/MapLegend";
 import tracks from "./assets/tracks.geojson";
 import { useState, useEffect, useMemo } from "react";
 import { useLoadMarkers, useClusterer } from "./hooks";
+import { scaleLgSolo, scaleMdCluster, pinColorActiveRemediation, pinColorHighPriorityIncident, pinColorPredictedIncident } from "./constants";
 
 const MapView = (props) => {
     const {
@@ -53,13 +54,6 @@ const MapView = (props) => {
 
     const iconStyles = [
         "fluent-mdl2:location-dot",
-        "fluent-mdl2:location-fill",
-        "raphael:location",
-        "mdi:map-marker-radius-outline",
-        "ic:twotone-location-on",
-        "ic:sharp-location-on",
-        "mdi:location-radius",
-        "openmoji:location-indicator",
     ];
 
     const zoomNoClusterThreshold = 1;
@@ -76,16 +70,6 @@ const MapView = (props) => {
         const { transform, position, ...rest } = style;
         return rest;
     };
-
-    const scaleSmSolo = 0.0125;
-    const scaleMdSolo = 0.015;
-    const scaleLgSolo = 0.025;
-    const scaleMdCluster = 0.035;
-    const scaleLgCluster = 0.05;
-    const scaleXlCluster = 0.1;
-    const pinColorActiveRemediation = "blue";
-    const pinColorPredictedIncident = "orange";
-    const pinColorHighPriorityIncident = "red";
 
     // will probably get removed
     useEffect(() => {
@@ -238,9 +222,10 @@ const MapView = (props) => {
             mapTypeId: maps.MapTypeId.HYBRID,
             mapTypeControlOptions: {
                 style: maps.MapTypeControlStyle.HORIZONTAL_BAR,
-                position: maps.ControlPosition.TOP_CENTER,
+                position: maps.ControlPosition.TOP_RIGHT,
             },
             scrollwheel: true,
+            fullscreenControl: false,
         };
     };
 
