@@ -52,7 +52,7 @@ const MapControlView = (props) => {
                 overflowX={"auto"}
             >
                 <Stack>
-                    <ButtonGroup variant="outline" spacing="10" align={"center"}>
+                    <ButtonGroup variant="outline" spacing="10" textAlign="center" width="100%">
                         <ButtonGroup variant="outline" spacing="4">
                             <Button
                                 leftIcon={
@@ -72,11 +72,7 @@ const MapControlView = (props) => {
                                 variant="solid"
                                 borderColor={pinColorActiveRemediation}
                                 isActive={active}
-                                onClick={
-                                    active
-                                        ? handleClickActive(false)
-                                        : handleClickActive(true)
-                                }
+                                onClick={handleClickActive}
                             >
                                 Active Remediation
                             </Button>
@@ -98,11 +94,7 @@ const MapControlView = (props) => {
                                 variant="solid"
                                 borderColor={pinColorPredictedIncident}
                                 isActive={predicted}
-                                onClick={
-                                    predicted
-                                        ? handleClickPredicted(false)
-                                        : handleClickPredicted(true)
-                                }
+                                onClick={handleClickPredicted}
                             >
                                 Predicted Incident
                             </Button>
@@ -124,11 +116,7 @@ const MapControlView = (props) => {
                                 variant="solid"
                                 borderColor={pinColorHighPriorityIncident}
                                 isActive={priority}
-                                onClick={
-                                    priority
-                                        ? handleClickPriority(false)
-                                        : handleClickPriority(true)
-                                }
+                                onClick={handleClickPriority}
                             >
                                 High Priority
                             </Button>
@@ -151,7 +139,7 @@ const MapControlView = (props) => {
                                 variant="solid"
                                 borderColor={colorSubFlinFlon}
                                 isActive={subFlinFlon}
-                                onClick={ subFlinFlon ? handleClickSubFlinFlon(false) : handleClickSubFlinFlon(true) }
+                                onClick={handleClickSubFlinFlon}
                             >
                                 Flin Flon
                             </Button>
@@ -172,7 +160,7 @@ const MapControlView = (props) => {
                                 variant="solid"
                                 borderColor={colorSubThePas}
                                 isActive={subThePas}
-                                onClick={ subThePas ? handleClickSubThePas(false) : handleClickSubThePas(true) }
+                                onClick={handleClickSubThePas}
                             >
                                 The Pas
                             </Button>
@@ -193,7 +181,7 @@ const MapControlView = (props) => {
                                 variant="solid"
                                 borderColor={colorSubWekusko}
                                 isActive={subWekusko}
-                                onClick={ subWekusko ? handleClickSubWekusko(false) : handleClickSubWekusko(true) }
+                                onClick={handleClickSubWekusko}
                             >
                                 Wekusko
                             </Button>
@@ -214,7 +202,7 @@ const MapControlView = (props) => {
                                 variant="solid"
                                 borderColor={colorSubThicket}
                                 isActive={subThicket}
-                                onClick={ subThicket ? handleClickSubThicket(false) : handleClickSubThicket(true) }
+                                onClick={handleClickSubThicket}
                             >
                                 Thicket
                             </Button>
@@ -235,7 +223,7 @@ const MapControlView = (props) => {
                                 variant="solid"
                                 borderColor={colorSubHerchmer}
                                 isActive={subHerchmer}
-                                onClick={ subHerchmer ? handleClickSubHerchmer(false) : handleClickSubHerchmer(true) }
+                                onClick={handleClickSubHerchmer}
                             >
                                 Herchmer
                             </Button>
@@ -256,7 +244,7 @@ const MapControlView = (props) => {
                                 variant="solid"
                                 borderColor={colorSubThompson}
                                 isActive={subThompson}
-                                onClick={ subThompson ? handleClickSubThompson(false) : handleClickSubThompson(true) }
+                                onClick={handleClickSubThompson}
                             >
                                 Thompson
                             </Button>

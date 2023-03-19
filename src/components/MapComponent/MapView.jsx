@@ -3,7 +3,7 @@ import GoogleMapReact from "google-map-react";
 //import MapLegend from "./components/MapLegend";
 import MapControl from "./components/MapControlContainer";
 import tracks from "./assets/tracks.geojson";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useLoadMarkers, useClusterer } from "./hooks";
 import {
     scaleLgSolo,
@@ -32,49 +32,21 @@ const MapView = (props) => {
 
     const zoomNoClusterThreshold = 1;
 
-    const [legendItems, setLegendItems] = useState([]);
     const [mapRef, setMap] = useState(null);
     const [mapsRef, setMaps] = useState(null);
     const [bounds, setBounds] = useState(null);
     const [zoomLevel, setZoomLevel] = useState(zoom);
     const [height, setHeight] = useState(heightProp);
 
-    // will probably get removed
-    useEffect(() => {
-        const pinStyleActiveRemediation = {
-            fontSize: legendIconSize,
-            color: pinColorActiveRemediation,
-        };
-
-        const pinStylePredictedIncident = {
-            fontSize: legendIconSize,
-            color: pinColorPredictedIncident,
-        };
-
-        const pinStyleHighPriority = {
-            fontSize: legendIconSize,
-            color: pinColorHighPriorityIncident,
-        };
-
-        const iconStyle = "fluent-mdl2:location-dot";
-        setLegendItems([
-            {
-                name: "Active Remediation",
-                iconStyle: iconStyle,
-                styleOptions: pinStyleActiveRemediation,
-            },
-            {
-                name: "Predicted Incident",
-                iconStyle: iconStyle,
-                styleOptions: pinStylePredictedIncident,
-            },
-            {
-                name: "High Priority Incident",
-                iconStyle: iconStyle,
-                styleOptions: pinStyleHighPriority,
-            },
-        ]);
-    }, []);
+    const [active, setActive] = useState(true);
+    const [predicted, setPredicted] = useState(true);
+    const [priority, setPriority] = useState(true);
+    const [subFlinFlon, setSubFlinFlon] = useState(true);
+    const [subThePas, setSubThePas] = useState(true);
+    const [subWekusko, setSubWekusko] = useState(true);
+    const [subThicket, setSubThicket] = useState(true);
+    const [subHerchmer, setSubHerchmer] = useState(true);
+    const [subThompson, setSubThompson] = useState(true);
 
     // Set map bounds based on list of stations
     const setupMap = () => {
@@ -108,23 +80,6 @@ const MapView = (props) => {
         });
     };
     useEffect(setupTracks, [mapRef]);
-
-    // setup legend
-    // const setupLegend = () => {
-    //     if (!mapRef || !mapsRef) return;
-    //     mapRef.controls[mapsRef.ControlPosition.LEFT_BOTTOM].push(
-    //         document.getElementById("map-legend")
-    //     );
-    // };
-    // useEffect(setupLegend, [mapRef, mapsRef]);
-
-    // const setupControls = () => {
-    //     if (!mapRef || !mapsRef) return;
-    //     mapRef.controls[mapsRef.ControlPosition.LEFT_BOTTOM].push(
-    //         document.getElementById("map-controls")
-    //     );
-    // };
-    // useEffect(setupControls, [mapRef, mapsRef]);
 
     const [markersActiveRemediation, setMarkersActiveRemediation] =
         useLoadMarkers(
@@ -187,17 +142,33 @@ const MapView = (props) => {
         scaleMdCluster
     );
 
-    const handleHideMarkers = (markers) => {
-        markers.forEach((marker) => {
-            marker.setMap(null);
-        });
-    };
+    // const handleHideMarkers = (markers) => {
+    //     if (!markers || markers.length === 0) return;
+    //     markers.forEach((marker) => {
+    //         marker.setMap(null);
+    //     });
+    // };
 
-    const handleShowMarkers = (markers) => {
-        markers.forEach((marker) => {
-            marker.setMap(mapRef);
-        });
-    };
+    // const handleShowMarkers = useCallback((markers) => {
+    //     if (!mapRef) return;
+    //     if (!markers || markers.length === 0) return;
+    //     markers.forEach((marker) => {
+    //         marker.setMap(mapRef);
+    //     });
+    // }, [mapRef]);
+
+    // const handleActiveRemediationToggle = () => {
+    //     if (active) {
+    //         handleShowMarkers(markersActiveRemediation);
+    //         handleShowMarkers(markersActiveRemediationCluster);
+    //     } else {
+    //         handleHideMarkers(markersActiveRemediation);
+    //         handleHideMarkers(markersActiveRemediationCluster);
+    //     }
+    // };
+    // useEffect(handleActiveRemediationToggle, [active, handleShowMarkers, markersActiveRemediation, markersActiveRemediationCluster]);
+
+
 
     const handleSelectSubdivision = (subdivision) => {};
 
@@ -225,8 +196,30 @@ const MapView = (props) => {
     };
 
     return (
-        <div className="google-map" style={{ width: width, height: height, position: "relative"}}>
-            <MapControl />
+        <div
+            className="google-map"
+            style={{ width: width, height: height, position: "relative" }}
+        >
+            <MapControl
+                active={active}
+                predicted={predicted}
+                priority={priority}
+                subFlinFlon={subFlinFlon}
+                subThePas={subThePas}
+                subWekusko={subWekusko}
+                subThicket={subThicket}
+                subHerchmer={subHerchmer}
+                subThompson={subThompson}
+                setActive={setActive}
+                setPredicted={setPredicted}
+                setPriority={setPriority}
+                setSubFlinFlon={setSubFlinFlon}
+                setSubThePas={setSubThePas}
+                setSubWekusko={setSubWekusko}
+                setSubThicket={setSubThicket}
+                setSubHerchmer={setSubHerchmer}
+                setSubThompson={setSubThompson}
+            />
             <GoogleMapReact
                 bootstrapURLKeys={{ key: apiKey }}
                 defaultCenter={location}
