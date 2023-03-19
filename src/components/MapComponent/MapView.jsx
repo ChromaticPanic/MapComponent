@@ -4,7 +4,6 @@ import MapLegend from "./components/MapLegend";
 import tracks from "./assets/tracks.geojson";
 import { useState, useEffect, useMemo } from "react";
 import { useLoadMarkers, useClusterer } from "./hooks";
-import { MarkerClusterer } from "@googlemaps/markerclusterer";
 
 const MapView = (props) => {
     const {
@@ -12,7 +11,7 @@ const MapView = (props) => {
         apiKey,
         location,
         width,
-        height,
+        height: heightProp,
         stations,
         incidentsActiveRemediation,
         incidentsPredicted,
@@ -71,7 +70,7 @@ const MapView = (props) => {
     const [mapsRef, setMaps] = useState(null);
     const [bounds, setBounds] = useState(null);
     const [zoomLevel, setZoomLevel] = useState(zoom);
-    const [updatedIncidents, setUpdatedIncidents] = useState([]);
+    const [height, setHeight] = useState(heightProp);
 
     const withoutTransform = (style) => {
         const { transform, position, ...rest } = style;
@@ -123,16 +122,13 @@ const MapView = (props) => {
     };
     useEffect(setupMap, [mapRef, mapsRef, stations]);
 
-    // Re-center map when resizing the window
-    const handleResize = () => {
-        if (!mapRef || !mapsRef) return;
-        mapsRef.event.addDomListenerOnce(mapRef, "idle", () => {
-            mapsRef.event.addDomListener(window, "resize", () => {
-                mapRef.fitBounds(bounds, 20);
-            });
-        });
-    };
-    useEffect(handleResize, [mapRef, mapsRef, bounds]);
+    // resize map when window is resized
+    const resizeObserver = new ResizeObserver(e => {
+        if (!mapRef || !bounds) return;
+        mapRef.fitBounds(bounds, 20);
+    });
+    
+    resizeObserver.observe(document.body);
 
     // setup tracks
     const setupTracks = () => {
@@ -227,19 +223,12 @@ const MapView = (props) => {
         });
     };
 
-    // Fit map to its bounds after the api is loaded
+    const handleSelectSubdivision = (subdivision) => {
+    };
+
     const handleApiLoaded = (map, maps) => {
         setMap(map);
         setMaps(maps);
-        // Get bounds by our places
-        //const bounds = getMapBounds(map, maps, stations);
-        // Fit map to bounds
-        // Bind the resize listener
-        //bindResizeListener(map, maps, bounds);
-
-        //setupTracks(map);
-
-        // setupLegend();
     };
 
     const createMapOptions = (maps) => {
@@ -257,7 +246,7 @@ const MapView = (props) => {
 
     return (
         <div className="google-map" style={{ width: width, height: height }}>
-            <MapLegend legendItems={legendItems} bounds={bounds} />
+            <MapLegend legendItems={legendItems} />
             <GoogleMapReact
                 bootstrapURLKeys={{ key: apiKey }}
                 defaultCenter={location}
@@ -268,36 +257,6 @@ const MapView = (props) => {
                 }
                 options={createMapOptions}
             >
-                {/* {incidentsHighPriority.map((i) => (
-                    <MapIncidentPin
-                        key={i.lat + i.lng}
-                        lat={i.lat}
-                        lng={i.lng}
-                        styleOptions={pinStyleHigh}
-                        iconStyle={iconStyle}
-                        onClick={handleHighPriorityIncidentClick}
-                    />
-                ))}
-                {incidentsPredicted.map((i) => (
-                    <MapIncidentPin
-                        key={i.lat + i.lng}
-                        lat={i.lat}
-                        lng={i.lng}
-                        styleOptions={pinStyleMid}
-                        iconStyle={iconStyle}
-                        onClick={handlePredictedIncidentClick}
-                    />
-                ))}
-                {incidentsActiveRemediation.map((i) => (
-                    <MapIncidentPin
-                        key={i.lat + i.lng}
-                        lat={i.lat}
-                        lng={i.lng}
-                        styleOptions={pinStyleLow}
-                        iconStyle={iconStyle}
-                        onClick={handleActiveRemediationClick}
-                    />
-                ))} */}
             </GoogleMapReact>
         </div>
     );
@@ -324,7 +283,7 @@ MapView.propTypes = {
 
 MapView.defaultProps = {
     width: "100%",
-    height: "1080px",
+    height: "100vh",
     location: {
         lat: 56.59638974465631,
         lng: -96.64761357599087,

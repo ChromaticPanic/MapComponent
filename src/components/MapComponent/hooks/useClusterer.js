@@ -15,7 +15,11 @@ const useClusterer = (map, maps, markers, pinColor, scale) => {
                     anchorFunc,
                     color: pinColor,
                     scale,
-                    text: count.toString(),
+                    overrides: {
+                        strokeOpacity: 0.5,
+                        strokeWeight: 6,
+                        strokeColor: "#f9e79f",
+                    }
                 });
                 const marker = new maps.Marker({
                     label: {
