@@ -6,9 +6,9 @@ export const scaleLgSolo = 0.025;
 export const scaleMdCluster = 0.035;
 export const scaleLgCluster = 0.05;
 export const scaleXlCluster = 0.1;
-export const pinColorActiveRemediation = "blue";
-export const pinColorPredictedIncident = "orange";
-export const pinColorHighPriorityIncident = "red";
+export const pinColorActiveRemediation = "#3A5F93";
+export const pinColorPredictedIncident = "#FEB92D";
+export const pinColorHighPriorityIncident = "#E82B49";
 export const legendIconSize = "20px";
 export const subdivisions = [
     "All",
@@ -41,12 +41,12 @@ export const defaultLegendStyle = {
     position: "absolute",
 };
 export const defaultControlStyle = {
-    // background: "black",
-    padding: "5px",
+    background: "#F2F2F2",
+    padding: "10px",
     //margin: "40px",
     width: "100%",
-    border: "5px solid",
-    borderColor: "#85929e",
+    border: "3px solid",
+    borderColor: "gray",
     borderRadius: "10px",
     bottom: "0px",
     left: "0px",
