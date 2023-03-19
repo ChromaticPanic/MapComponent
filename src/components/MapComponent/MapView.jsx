@@ -3,7 +3,8 @@ import GoogleMapReact from "google-map-react";
 import MapLegend from "./components/MapLegend";
 import tracks from "./assets/tracks.geojson";
 import { useState, useEffect, useMemo } from "react";
-import { useLoadMarkers } from "./hooks";
+import { useLoadMarkers, useClusterer } from "./hooks";
+import { MarkerClusterer } from "@googlemaps/markerclusterer";
 
 const MapView = (props) => {
     const {
@@ -152,9 +153,48 @@ const MapView = (props) => {
     };
     useEffect(setupLegend, [mapRef, mapsRef]);
 
-    const [markersActiveRemediation, setMarkersActiveRemediation] = useLoadMarkers(mapRef, mapsRef, incidentsActiveRemediation, pinColorActiveRemediation, scaleSmSolo, handleActiveRemediationClick);
-    const [markersPredictedIncident, setMarkersPredictedIncident] = useLoadMarkers(mapRef, mapsRef, incidentsPredicted, pinColorPredictedIncident, scaleSmSolo, handlePredictedIncidentClick);  
-    const [markersHighPriorityIncident, setMarkersHighPriorityIncident] = useLoadMarkers(mapRef, mapsRef, incidentsHighPriority, pinColorHighPriorityIncident, scaleSmSolo, handleHighPriorityIncidentClick);
+    const [markersActiveRemediation, setMarkersActiveRemediation] =
+        useLoadMarkers(
+            mapRef,
+            mapsRef,
+            incidentsActiveRemediation,
+            pinColorActiveRemediation,
+            scaleSmSolo,
+            handleActiveRemediationClick
+        );
+    const [markersPredictedIncident, setMarkersPredictedIncident] =
+        useLoadMarkers(
+            mapRef,
+            mapsRef,
+            incidentsPredicted,
+            pinColorPredictedIncident,
+            scaleSmSolo,
+            handlePredictedIncidentClick
+        );
+    const [markersHighPriorityIncident, setMarkersHighPriorityIncident] =
+        useLoadMarkers(
+            mapRef,
+            mapsRef,
+            incidentsHighPriority,
+            pinColorHighPriorityIncident,
+            scaleSmSolo,
+            handleHighPriorityIncidentClick
+        );
+
+    const [
+        markersActiveRemediationCluster,
+        setMarkersActiveRemediationCluster,
+    ] = useClusterer(mapRef, markersActiveRemediation);
+
+    const [
+        markersPredictedIncidentCluster,
+        setMarkersPredictedIncidentCluster,
+    ] = useClusterer(mapRef, markersPredictedIncident);
+
+    const [
+        markersHighPriorityIncidentCluster,
+        setMarkersHighPriorityIncidentCluster,
+    ] = useClusterer(mapRef, markersHighPriorityIncident);
 
     const handleHideMarkers = (markers) => {
         markers.forEach((marker) => {
@@ -167,7 +207,7 @@ const MapView = (props) => {
             marker.setMap(mapRef);
         });
     };
-    
+
     // Fit map to its bounds after the api is loaded
     const handleApiLoaded = (map, maps) => {
         setMap(map);

@@ -3,18 +3,10 @@ import {
     markerIcon,
 } from "../components/MapIcons";
 import { mapMarkers } from "../components/MapMarker";
+import { withStyle } from "../utils/utils";
 
 const useLoadMarkers = (mapRef, mapsRef, incidents, pinColor, scale, handleClick) => {
     const [markers, setMarkers] = useState([]);
-
-    const withStyle = (incidents, style) => {
-        return incidents.map((i) => {
-            return {
-                ...i,
-                iconStyle: style,
-            };
-        });
-    };
   
     useEffect(() => {
       if (!mapRef || !mapsRef) return;

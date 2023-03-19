@@ -1,5 +1,4 @@
 import PropTypes from "prop-types";
-// import MarkerClusterer from '@google/markerclusterer'
 
 export const mapMarkers = (props) => {
     const { mapRef: map, mapsRef, incidents, onMarkerClick } = props;
