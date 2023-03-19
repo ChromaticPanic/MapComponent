@@ -1,21 +1,11 @@
 import { Icon } from "@iconify/react";
 import Draggable from "react-draggable";
 import { useState } from "react";
+import { defaultLegendStyle } from "../constants";
 
 const MapLegend = (props) => {
     const { legendItems, map } = props;
-    const [legendStyle, setLegendStyle] = useState({
-        background: "#ffffff",
-        padding: "5px",
-        margin: "40px",
-        border: "5px solid",
-        borderColor: "#85929e",
-        borderRadius: "10px",
-        fontSize: "20px",
-        borderCollapse: "collapse",
-        zIndex: "1",
-        position: "absolute",
-    });
+    const [legendStyle, setLegendStyle] = useState(defaultLegendStyle);
 
     return (
         <Draggable>

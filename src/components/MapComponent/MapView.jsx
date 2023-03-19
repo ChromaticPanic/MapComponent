@@ -1,10 +1,18 @@
 import PropTypes from "prop-types";
 import GoogleMapReact from "google-map-react";
-import MapLegend from "./components/MapLegend";
+//import MapLegend from "./components/MapLegend";
+import MapControl from "./components/MapControlContainer";
 import tracks from "./assets/tracks.geojson";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { useLoadMarkers, useClusterer } from "./hooks";
-import { scaleLgSolo, scaleMdCluster, pinColorActiveRemediation, pinColorHighPriorityIncident, pinColorPredictedIncident } from "./constants";
+import {
+    scaleLgSolo,
+    scaleMdCluster,
+    pinColorActiveRemediation,
+    pinColorHighPriorityIncident,
+    pinColorPredictedIncident,
+    legendIconSize,
+} from "./constants";
 
 const MapView = (props) => {
     const {
@@ -22,43 +30,8 @@ const MapView = (props) => {
         handleHighPriorityIncidentClick,
     } = props;
 
-    const pinStyleCommon = useMemo(() => {
-        return {
-            fontSize: "36px",
-            position: "absolute",
-            //transform: "translate(-20px, -40px)",
-            transform: "translate(-18px, -18px)",
-        };
-    }, []);
-
-    const pinStyleLow = useMemo(() => {
-        return {
-            ...pinStyleCommon,
-            color: "blue",
-        };
-    }, [pinStyleCommon]);
-
-    const pinStyleMid = useMemo(() => {
-        return {
-            ...pinStyleCommon,
-            color: "orange",
-        };
-    }, [pinStyleCommon]);
-
-    const pinStyleHigh = useMemo(() => {
-        return {
-            ...pinStyleCommon,
-            color: "red",
-        };
-    }, [pinStyleCommon]);
-
-    const iconStyles = [
-        "fluent-mdl2:location-dot",
-    ];
-
     const zoomNoClusterThreshold = 1;
 
-    const [iconStyle, setIconStyle] = useState(iconStyles[0]);
     const [legendItems, setLegendItems] = useState([]);
     const [mapRef, setMap] = useState(null);
     const [mapsRef, setMaps] = useState(null);
@@ -66,31 +39,42 @@ const MapView = (props) => {
     const [zoomLevel, setZoomLevel] = useState(zoom);
     const [height, setHeight] = useState(heightProp);
 
-    const withoutTransform = (style) => {
-        const { transform, position, ...rest } = style;
-        return rest;
-    };
-
     // will probably get removed
     useEffect(() => {
+        const pinStyleActiveRemediation = {
+            fontSize: legendIconSize,
+            color: pinColorActiveRemediation,
+        };
+
+        const pinStylePredictedIncident = {
+            fontSize: legendIconSize,
+            color: pinColorPredictedIncident,
+        };
+
+        const pinStyleHighPriority = {
+            fontSize: legendIconSize,
+            color: pinColorHighPriorityIncident,
+        };
+
+        const iconStyle = "fluent-mdl2:location-dot";
         setLegendItems([
             {
                 name: "Active Remediation",
                 iconStyle: iconStyle,
-                styleOptions: withoutTransform(pinStyleLow),
+                styleOptions: pinStyleActiveRemediation,
             },
             {
                 name: "Predicted Incident",
                 iconStyle: iconStyle,
-                styleOptions: withoutTransform(pinStyleMid),
+                styleOptions: pinStylePredictedIncident,
             },
             {
                 name: "High Priority Incident",
                 iconStyle: iconStyle,
-                styleOptions: withoutTransform(pinStyleHigh),
+                styleOptions: pinStyleHighPriority,
             },
         ]);
-    }, [iconStyle, pinStyleHigh, pinStyleLow, pinStyleMid]);
+    }, []);
 
     // Set map bounds based on list of stations
     const setupMap = () => {
@@ -107,11 +91,11 @@ const MapView = (props) => {
     useEffect(setupMap, [mapRef, mapsRef, stations]);
 
     // resize map when window is resized
-    const resizeObserver = new ResizeObserver(e => {
+    const resizeObserver = new ResizeObserver((e) => {
         if (!mapRef || !bounds) return;
         mapRef.fitBounds(bounds, 20);
     });
-    
+
     resizeObserver.observe(document.body);
 
     // setup tracks
@@ -133,6 +117,13 @@ const MapView = (props) => {
         );
     };
     useEffect(setupLegend, [mapRef, mapsRef]);
+
+    const setupControls = () => {
+        if (!mapRef || !mapsRef) return;
+        mapRef.controls[mapsRef.ControlPosition.CENTER_TOP].push(
+            document.getElementById("map-controls")
+        );
+    };
 
     const [markersActiveRemediation, setMarkersActiveRemediation] =
         useLoadMarkers(
@@ -207,8 +198,7 @@ const MapView = (props) => {
         });
     };
 
-    const handleSelectSubdivision = (subdivision) => {
-    };
+    const handleSelectSubdivision = (subdivision) => {};
 
     const handleApiLoaded = (map, maps) => {
         setMap(map);
@@ -231,7 +221,7 @@ const MapView = (props) => {
 
     return (
         <div className="google-map" style={{ width: width, height: height }}>
-            <MapLegend legendItems={legendItems} />
+            <MapControl />
             <GoogleMapReact
                 bootstrapURLKeys={{ key: apiKey }}
                 defaultCenter={location}
@@ -241,8 +231,7 @@ const MapView = (props) => {
                     handleApiLoaded(map, maps)
                 }
                 options={createMapOptions}
-            >
-            </GoogleMapReact>
+            ></GoogleMapReact>
         </div>
     );
 };
