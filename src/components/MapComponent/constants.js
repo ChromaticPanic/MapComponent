@@ -22,7 +22,7 @@ export const subdivisions = [
 
 export const colorSubAll = "black";
 export const colorSubFlinFlon = "#C8B2A8";
-export const colorSubThePas = "#C2AAC6";
+export const colorSubThePas = "#ffc900";
 export const colorSubWekusko = "white";
 export const colorSubThicket = "#BB8FD0";
 export const colorSubHerchmer = "#EDC47F";

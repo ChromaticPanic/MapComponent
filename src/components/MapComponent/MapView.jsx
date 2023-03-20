@@ -23,6 +23,12 @@ import {
     colorSubThicket,
     colorSubHerchmer,
     colorSubThompson,
+    limitsFlinFlon,
+    limitsThePas,
+    limitsWekusko,
+    limitsThicket,
+    limitsHerchmer,
+    limitsThompson,
 } from "./constants";
 
 const MapView = (props) => {
@@ -52,31 +58,48 @@ const MapView = (props) => {
     const [active, setActive] = useState(true);
     const [predicted, setPredicted] = useState(true);
     const [priority, setPriority] = useState(true);
-    const [subFlinFlon, setSubFlinFlon] = useState(true);
-    const [subThePas, setSubThePas] = useState(true);
-    const [subWekusko, setSubWekusko] = useState(true);
-    const [subThicket, setSubThicket] = useState(true);
-    const [subHerchmer, setSubHerchmer] = useState(true);
-    const [subThompson, setSubThompson] = useState(true);
+    const [subFlinFlon, setSubFlinFlon] = useState(false);
+    const [subThePas, setSubThePas] = useState(false);
+    const [subWekusko, setSubWekusko] = useState(false);
+    const [subThicket, setSubThicket] = useState(false);
+    const [subHerchmer, setSubHerchmer] = useState(false);
+    const [subThompson, setSubThompson] = useState(false);
+    const [viewArea, setViewArea] = useState([]);
 
+    useEffect(() => {
+        if (viewArea.length === 0) {
+            let newArea = [];
+            limitsFlinFlon.forEach((s) => {
+                newArea.push(s);
+            });
+            limitsThePas.forEach((s) => {
+                newArea.push(s);
+            });
+            limitsHerchmer.forEach((s) => {
+                newArea.push(s);
+            });
+            setViewArea(newArea);
+        }
+    }, [viewArea]);
+    
     // Set map bounds based on list of stations
     const setupMap = () => {
-        if (!mapRef || !mapsRef) return;
+        if (!mapRef || !mapsRef || viewArea.length === 0) return;
         const bounds = new mapsRef.LatLngBounds();
 
-        stations.forEach((s) => {
+        viewArea.forEach((s) => {
             bounds.extend(new mapsRef.LatLng(s.lat, s.lng));
         });
         setBounds(bounds);
         mapRef.fitBounds(bounds);
         setZoomLevel(mapRef.getZoom());
     };
-    useEffect(setupMap, [mapRef, mapsRef, stations]);
+    useEffect(setupMap, [mapRef, mapsRef, viewArea]);
 
     // resize map when window is resized
     const resizeObserver = new ResizeObserver((e) => {
         if (!mapRef || !bounds) return;
-        mapRef.fitBounds(bounds, 20);
+        mapRef.fitBounds(bounds, 40);
     });
 
     resizeObserver.observe(document.body);
@@ -257,7 +280,43 @@ const MapView = (props) => {
         priority,
     ]);
 
-    const handleSelectSubdivision = (subdivision) => {};
+    const resetFocus = () => {
+        if (!mapRef || !mapsRef) return;
+        let newArea = [];
+        if (subFlinFlon) {
+            limitsFlinFlon.forEach((point) => {
+                newArea.push(point);
+            });
+        }
+        if (subThicket) {
+            limitsThicket.forEach((point) => {
+                newArea.push(point);
+            });
+        }
+        if (subThompson) {
+            limitsThompson.forEach((point) => {
+                newArea.push(point);
+            });
+        }
+        if (subThePas) {
+            limitsThePas.forEach((point) => {
+                newArea.push(point);
+            });
+        }
+        if (subWekusko) {
+            limitsWekusko.forEach((point) => {
+                newArea.push(point);
+            });
+        }
+        if (subHerchmer) {
+            limitsHerchmer.forEach((point) => {
+                newArea.push(point);
+            });
+        }
+        setViewArea(newArea);
+    };
+    useEffect(resetFocus, [mapRef, mapsRef, subFlinFlon, subThicket, subThompson, subThePas, subWekusko, subHerchmer]);
+
 
     const handleApiLoaded = (map, maps) => {
         setMap(map);
