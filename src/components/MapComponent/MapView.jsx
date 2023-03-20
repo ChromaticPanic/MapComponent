@@ -3,13 +3,13 @@ import GoogleMapReact from "google-map-react";
 //import MapLegend from "./components/MapLegend";
 import MapControl from "./components/MapControlContainer";
 import tracks from "./assets/trackssubds.geojson";
-import tracksFlinFlon from "./assets/tracksFlinFlon.geojson";
-import tracksThePas from "./assets/tracksThePas.geojson";
-import tracksWekusko from "./assets/tracksWekusko.geojson";
-import tracksThicket from "./assets/tracksThicket.geojson";
-import tracksHerchmer from "./assets/tracksHerchmer.geojson";
-import tracksThompson from "./assets/tracksThompson.geojson";
-import { useState, useEffect, useCallback } from "react";
+// import tracksFlinFlon from "./assets/tracksFlinFlon.geojson";
+// import tracksThePas from "./assets/tracksThePas.geojson";
+// import tracksWekusko from "./assets/tracksWekusko.geojson";
+// import tracksThicket from "./assets/tracksThicket.geojson";
+// import tracksHerchmer from "./assets/tracksHerchmer.geojson";
+// import tracksThompson from "./assets/tracksThompson.geojson";
+import { useState, useEffect } from "react";
 import { useLoadMarkers, useClusterer } from "./hooks";
 import {
     scaleLgSolo,
