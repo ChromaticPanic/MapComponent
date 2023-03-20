@@ -283,6 +283,7 @@ const MapView = (props) => {
     const resetFocus = () => {
         if (!mapRef || !mapsRef) return;
         let newArea = [];
+
         if (subFlinFlon) {
             limitsFlinFlon.forEach((point) => {
                 newArea.push(point);
@@ -316,6 +317,39 @@ const MapView = (props) => {
         setViewArea(newArea);
     };
     useEffect(resetFocus, [mapRef, mapsRef, subFlinFlon, subThicket, subThompson, subThePas, subWekusko, subHerchmer]);
+
+    const updateVisibility = () => {
+        if (!mapRef || !mapsRef) return;
+        mapRef.data.forEach((feature) => {
+            let visible = false;
+            const trackName = feature.getProperty("SUBDI1NAME");
+            
+            // if all false then visible
+            if (!subFlinFlon && !subThicket && !subThompson && !subThePas && !subWekusko && !subHerchmer) {
+                visible = true;
+            }
+            if (subFlinFlon && trackName === "Flin Flon") {
+                visible = true;
+            }
+            if (subThicket && trackName === "Thicket") {
+                visible = true;
+            }
+            if (subThompson && trackName === "Thompson") {
+                visible = true;
+            }
+            if (subThePas && trackName === "The Pas Terminal") {
+                visible = true;
+            }
+            if (subWekusko && trackName === "Wekusko") {
+                visible = true;
+            }
+            if (subHerchmer && trackName === "Herchmer") {
+                visible = true;
+            }
+            mapRef.data.overrideStyle(feature, { visible: visible });
+        });
+    };
+    useEffect(updateVisibility, [mapRef, mapsRef, subFlinFlon, subThicket, subThompson, subThePas, subWekusko, subHerchmer]);
 
 
     const handleApiLoaded = (map, maps) => {

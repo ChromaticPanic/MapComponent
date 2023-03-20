@@ -52,8 +52,8 @@ const MapControlView = (props) => {
                 overflowX={"auto"}
             >
                 <Stack>
-                    <ButtonGroup variant="outline" spacing="10" textAlign="center" width="100%">
-                        <ButtonGroup variant="outline" spacing="4">
+                    <ButtonGroup variant="outline" spacing="14" textAlign="center" width="100%">
+                        <ButtonGroup variant="outline" spacing="4" paddingLeft="10">
                             <Button
                                 leftIcon={
                                     active ? (

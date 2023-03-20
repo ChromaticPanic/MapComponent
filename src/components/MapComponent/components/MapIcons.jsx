@@ -126,7 +126,7 @@ export const ControlRailIconDeselected = (props) => {
     let values = {
         width: 24,
         height: 24,
-        fill: "#f2f3f4",
+        fill: "#b3b3b3",
     };
 
     if (color) {

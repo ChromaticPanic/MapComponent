@@ -107,7 +107,7 @@ export const defaultLegendStyle = {
     position: "absolute",
 };
 export const defaultControlStyle = {
-    background: "#F2F2F2",
+    background: "#5b5b5b",
     padding: "10px",
     //margin: "40px",
     width: "100%",
