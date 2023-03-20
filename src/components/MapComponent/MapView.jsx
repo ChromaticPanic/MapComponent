@@ -13,6 +13,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useLoadMarkers, useClusterer } from "./hooks";
 import {
     scaleLgSolo,
+    scaleMdSolo,
     scaleMdCluster,
     pinColorActiveRemediation,
     pinColorHighPriorityIncident,
@@ -81,7 +82,7 @@ const MapView = (props) => {
             setViewArea(newArea);
         }
     }, [viewArea]);
-    
+
     // Set map bounds based on list of stations
     const setupMap = () => {
         if (!mapRef || !mapsRef || viewArea.length === 0) return;
@@ -120,8 +121,8 @@ const MapView = (props) => {
             color = colorSubHerchmer;
         } else if (trackName === "Thompson") {
             color = colorSubThompson;
-        };
-        console.log(trackName, color);
+        }
+        
         return {
             strokeColor: color,
             strokeWeight: 2.4,
@@ -142,7 +143,7 @@ const MapView = (props) => {
             mapsRef,
             incidentsActiveRemediation,
             pinColorActiveRemediation,
-            scaleLgSolo,
+            scaleMdSolo,
             handleActiveRemediationClick
         );
     const [markersPredictedIncident, setMarkersPredictedIncident] =
@@ -151,7 +152,7 @@ const MapView = (props) => {
             mapsRef,
             incidentsPredicted,
             pinColorPredictedIncident,
-            scaleLgSolo,
+            scaleMdSolo,
             handlePredictedIncidentClick
         );
     const [markersHighPriorityIncident, setMarkersHighPriorityIncident] =
@@ -160,7 +161,7 @@ const MapView = (props) => {
             mapsRef,
             incidentsHighPriority,
             pinColorHighPriorityIncident,
-            scaleLgSolo,
+            scaleMdSolo,
             handleHighPriorityIncidentClick
         );
 
@@ -197,61 +198,34 @@ const MapView = (props) => {
         scaleMdCluster
     );
 
-    const handleHideMarkers = (markers) => {
-        if (!markers || markers.length === 0) return;
-        markers.forEach((marker) => {
-            marker.setMap(null);
-        });
-    };
-
-    const handleShowMarkers = useCallback(
-        (markers) => {
-            if (!mapRef) return;
-            if (!markers || markers.length === 0) return;
-            markers.forEach((marker) => {
-                marker.setMap(mapRef);
-            });
-        },
-        [mapRef]
-    );
-
     const handleActiveRemediationToggle = () => {
-        if (!markersActiveRemediation) return;
-        if (active) {
-            handleShowMarkers(markersActiveRemediation);
-            // if (markersActiveRemediationCluster) {
-            //     markersActiveRemediationCluster.addMarkers(markersActiveRemediation);
-            // }
-        } else {
-            handleHideMarkers(markersActiveRemediation);
-            // if (markersActiveRemediationCluster) {
-            //     markersActiveRemediationCluster.clearMarkers();
-            // }
+        if (!mapRef || !markersActiveRemediation) return;
+
+        if (markersActiveRemediationCluster) {
+            if (active) {
+                // markersActiveRemediationCluster.setMap(mapRef)
+                markersActiveRemediationCluster.addMarkers(markersActiveRemediation);
+            } else {
+                // markersActiveRemediationCluster.setMap(null)
+                markersActiveRemediationCluster.clearMarkers();
+            }
         }
     };
-    useEffect(handleActiveRemediationToggle, [
-        active,
-        handleShowMarkers,
-        markersActiveRemediation,
-        markersActiveRemediationCluster,
-    ]);
+    useEffect(handleActiveRemediationToggle, [active, mapRef, markersActiveRemediation, markersActiveRemediationCluster]);
 
     const handlePredictedIncidentToggle = () => {
         if (!markersPredictedIncident) return;
-        if (predicted) {
-            handleShowMarkers(markersPredictedIncident);
-            // if (markersPredictedIncidentCluster) {
-            //     markersPredictedIncidentCluster.addMarkers(markersPredictedIncident);
-            // }
-        } else {
-            handleHideMarkers(markersPredictedIncident);
-            // if (markersPredictedIncidentCluster) {
-            //     markersPredictedIncidentCluster.clearMarkers();
-            // }
+        if (markersPredictedIncidentCluster) {
+            if (predicted) {
+                markersPredictedIncidentCluster.addMarkers(
+                    markersPredictedIncident
+                );
+            } else {
+                markersPredictedIncidentCluster.clearMarkers();
+            }
         }
     };
     useEffect(handlePredictedIncidentToggle, [
-        handleShowMarkers,
         markersPredictedIncident,
         markersPredictedIncidentCluster,
         predicted,
@@ -259,22 +233,17 @@ const MapView = (props) => {
 
     const handleHighPriorityIncidentToggle = () => {
         if (!markersHighPriorityIncident) return;
-        if (priority) {
-            handleShowMarkers(markersHighPriorityIncident);
-            // if (markersHighPriorityIncidentCluster) {
-            //     markersHighPriorityIncidentCluster.addMarkers(
-            //         markersHighPriorityIncident
-            //     );
-            // }
-        } else {
-            handleHideMarkers(markersHighPriorityIncident);
-            // if (markersHighPriorityIncidentCluster) {
-            //     markersHighPriorityIncidentCluster.clearMarkers();
-            // }
+        if (markersHighPriorityIncidentCluster) {
+            if (priority) {
+                markersHighPriorityIncidentCluster.addMarkers(
+                    markersHighPriorityIncident
+                );
+            } else {
+                markersHighPriorityIncidentCluster.clearMarkers();
+            }
         }
     };
     useEffect(handleHighPriorityIncidentToggle, [
-        handleShowMarkers,
         markersHighPriorityIncident,
         markersHighPriorityIncidentCluster,
         priority,
@@ -316,16 +285,32 @@ const MapView = (props) => {
         }
         setViewArea(newArea);
     };
-    useEffect(resetFocus, [mapRef, mapsRef, subFlinFlon, subThicket, subThompson, subThePas, subWekusko, subHerchmer]);
+    useEffect(resetFocus, [
+        mapRef,
+        mapsRef,
+        subFlinFlon,
+        subThicket,
+        subThompson,
+        subThePas,
+        subWekusko,
+        subHerchmer,
+    ]);
 
     const updateVisibility = () => {
         if (!mapRef || !mapsRef) return;
         mapRef.data.forEach((feature) => {
             let visible = false;
             const trackName = feature.getProperty("SUBDI1NAME");
-            
+
             // if all false then visible
-            if (!subFlinFlon && !subThicket && !subThompson && !subThePas && !subWekusko && !subHerchmer) {
+            if (
+                !subFlinFlon &&
+                !subThicket &&
+                !subThompson &&
+                !subThePas &&
+                !subWekusko &&
+                !subHerchmer
+            ) {
                 visible = true;
             }
             if (subFlinFlon && trackName === "Flin Flon") {
@@ -349,8 +334,16 @@ const MapView = (props) => {
             mapRef.data.overrideStyle(feature, { visible: visible });
         });
     };
-    useEffect(updateVisibility, [mapRef, mapsRef, subFlinFlon, subThicket, subThompson, subThePas, subWekusko, subHerchmer]);
-
+    useEffect(updateVisibility, [
+        mapRef,
+        mapsRef,
+        subFlinFlon,
+        subThicket,
+        subThompson,
+        subThePas,
+        subWekusko,
+        subHerchmer,
+    ]);
 
     const handleApiLoaded = (map, maps) => {
         setMap(map);

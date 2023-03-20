@@ -1,7 +1,7 @@
 
 
 export const scaleSmSolo = 0.0125;
-export const scaleMdSolo = 0.015;
+export const scaleMdSolo = 0.018;
 export const scaleLgSolo = 0.025;
 export const scaleMdCluster = 0.035;
 export const scaleLgCluster = 0.05;
@@ -21,7 +21,7 @@ export const subdivisions = [
 ];
 
 export const colorSubAll = "black";
-export const colorSubFlinFlon = "#C8B2A8";
+export const colorSubFlinFlon = "#00e8ff";
 export const colorSubThePas = "#ffc900";
 export const colorSubWekusko = "white";
 export const colorSubThicket = "#BB8FD0";
