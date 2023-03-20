@@ -26,7 +26,73 @@ export const colorSubThePas = "#C2AAC6";
 export const colorSubWekusko = "white";
 export const colorSubThicket = "#BB8FD0";
 export const colorSubHerchmer = "#EDC47F";
-export const colorSubThompson = "#C8B2A8";
+export const colorSubThompson = "#78ff5f";
+
+export const limitsFlinFlon = [
+    {
+        lat: 54.84436759709995,
+        lng: -101.96258669537703
+    },
+    {
+        lat: 53.663379849962396,
+        lng: -101.12992975070046
+    }
+];
+
+export const limitsThePas = [
+    {
+        lat: 53.839277405601834,
+        lng: -101.25656026839334
+    },
+    {
+        lat: 53.74869959304107,
+        lng: -101.22238806062148
+    }
+];
+
+export const limitsWekusko = [
+    {
+        lat: 53.81042448046114,
+        lng: -101.36654809109417
+    },
+    {
+        lat: 55.037062695569034,
+        lng: -98.53311833656625
+    }
+];
+
+export const limitsThicket = [
+    {
+        lat: 54.86130170839179,
+        lng: -98.69693911997605
+    },
+    {
+        lat: 56.40078920340232,
+        lng: -94.55883719438754
+    }
+];
+
+export const limitsHerchmer = [
+    {
+        lat: 56.3277351329905,
+        lng: -94.76593373841469
+    },
+    {
+        lat: 58.8299226347405,
+        lng: -94.00332023576732
+    }
+];
+
+export const limitsThompson = [
+    {
+        lat: 55.79689666900781,
+        lng: -97.93486103547043
+    },
+    {
+        lat: 55.43124371253696,
+        lng: -97.35499071219444
+    }
+];
 
 export const defaultLegendStyle = {
     background: "#ffffff",

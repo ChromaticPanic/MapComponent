@@ -2,7 +2,13 @@ import PropTypes from "prop-types";
 import GoogleMapReact from "google-map-react";
 //import MapLegend from "./components/MapLegend";
 import MapControl from "./components/MapControlContainer";
-import tracks from "./assets/tracks.geojson";
+import tracks from "./assets/trackssubds.geojson";
+import tracksFlinFlon from "./assets/tracksFlinFlon.geojson";
+import tracksThePas from "./assets/tracksThePas.geojson";
+import tracksWekusko from "./assets/tracksWekusko.geojson";
+import tracksThicket from "./assets/tracksThicket.geojson";
+import tracksHerchmer from "./assets/tracksHerchmer.geojson";
+import tracksThompson from "./assets/tracksThompson.geojson";
 import { useState, useEffect, useCallback } from "react";
 import { useLoadMarkers, useClusterer } from "./hooks";
 import {
@@ -11,7 +17,12 @@ import {
     pinColorActiveRemediation,
     pinColorHighPriorityIncident,
     pinColorPredictedIncident,
-    legendIconSize,
+    colorSubFlinFlon,
+    colorSubThePas,
+    colorSubWekusko,
+    colorSubThicket,
+    colorSubHerchmer,
+    colorSubThompson,
 } from "./constants";
 
 const MapView = (props) => {
@@ -70,14 +81,35 @@ const MapView = (props) => {
 
     resizeObserver.observe(document.body);
 
+    const trackStyler = (feature) => {
+        const trackName = feature.getProperty("SUBDI1NAME");
+
+        let color = "#d35400";
+        if (trackName === "Flin Flon") {
+            color = colorSubFlinFlon;
+        } else if (trackName === "The Pas Terminal") {
+            color = colorSubThePas;
+        } else if (trackName === "Wekusko") {
+            color = colorSubWekusko;
+        } else if (trackName === "Thicket") {
+            color = colorSubThicket;
+        } else if (trackName === "Herchmer") {
+            color = colorSubHerchmer;
+        } else if (trackName === "Thompson") {
+            color = colorSubThompson;
+        };
+        console.log(trackName, color);
+        return {
+            strokeColor: color,
+            strokeWeight: 2.4,
+        };
+    };
+
     // setup tracks
     const setupTracks = () => {
         if (!mapRef) return;
         mapRef.data.loadGeoJson(tracks);
-        mapRef.data.setStyle({
-            strokeColor: "#d35400",
-            strokeWeight: 1.5,
-        });
+        mapRef.data.setStyle(trackStyler);
     };
     useEffect(setupTracks, [mapRef]);
 
@@ -142,33 +174,88 @@ const MapView = (props) => {
         scaleMdCluster
     );
 
-    // const handleHideMarkers = (markers) => {
-    //     if (!markers || markers.length === 0) return;
-    //     markers.forEach((marker) => {
-    //         marker.setMap(null);
-    //     });
-    // };
+    const handleHideMarkers = (markers) => {
+        if (!markers || markers.length === 0) return;
+        markers.forEach((marker) => {
+            marker.setMap(null);
+        });
+    };
 
-    // const handleShowMarkers = useCallback((markers) => {
-    //     if (!mapRef) return;
-    //     if (!markers || markers.length === 0) return;
-    //     markers.forEach((marker) => {
-    //         marker.setMap(mapRef);
-    //     });
-    // }, [mapRef]);
+    const handleShowMarkers = useCallback(
+        (markers) => {
+            if (!mapRef) return;
+            if (!markers || markers.length === 0) return;
+            markers.forEach((marker) => {
+                marker.setMap(mapRef);
+            });
+        },
+        [mapRef]
+    );
 
-    // const handleActiveRemediationToggle = () => {
-    //     if (active) {
-    //         handleShowMarkers(markersActiveRemediation);
-    //         handleShowMarkers(markersActiveRemediationCluster);
-    //     } else {
-    //         handleHideMarkers(markersActiveRemediation);
-    //         handleHideMarkers(markersActiveRemediationCluster);
-    //     }
-    // };
-    // useEffect(handleActiveRemediationToggle, [active, handleShowMarkers, markersActiveRemediation, markersActiveRemediationCluster]);
+    const handleActiveRemediationToggle = () => {
+        if (!markersActiveRemediation) return;
+        if (active) {
+            handleShowMarkers(markersActiveRemediation);
+            // if (markersActiveRemediationCluster) {
+            //     markersActiveRemediationCluster.addMarkers(markersActiveRemediation);
+            // }
+        } else {
+            handleHideMarkers(markersActiveRemediation);
+            // if (markersActiveRemediationCluster) {
+            //     markersActiveRemediationCluster.clearMarkers();
+            // }
+        }
+    };
+    useEffect(handleActiveRemediationToggle, [
+        active,
+        handleShowMarkers,
+        markersActiveRemediation,
+        markersActiveRemediationCluster,
+    ]);
 
+    const handlePredictedIncidentToggle = () => {
+        if (!markersPredictedIncident) return;
+        if (predicted) {
+            handleShowMarkers(markersPredictedIncident);
+            // if (markersPredictedIncidentCluster) {
+            //     markersPredictedIncidentCluster.addMarkers(markersPredictedIncident);
+            // }
+        } else {
+            handleHideMarkers(markersPredictedIncident);
+            // if (markersPredictedIncidentCluster) {
+            //     markersPredictedIncidentCluster.clearMarkers();
+            // }
+        }
+    };
+    useEffect(handlePredictedIncidentToggle, [
+        handleShowMarkers,
+        markersPredictedIncident,
+        markersPredictedIncidentCluster,
+        predicted,
+    ]);
 
+    const handleHighPriorityIncidentToggle = () => {
+        if (!markersHighPriorityIncident) return;
+        if (priority) {
+            handleShowMarkers(markersHighPriorityIncident);
+            // if (markersHighPriorityIncidentCluster) {
+            //     markersHighPriorityIncidentCluster.addMarkers(
+            //         markersHighPriorityIncident
+            //     );
+            // }
+        } else {
+            handleHideMarkers(markersHighPriorityIncident);
+            // if (markersHighPriorityIncidentCluster) {
+            //     markersHighPriorityIncidentCluster.clearMarkers();
+            // }
+        }
+    };
+    useEffect(handleHighPriorityIncidentToggle, [
+        handleShowMarkers,
+        markersHighPriorityIncident,
+        markersHighPriorityIncidentCluster,
+        priority,
+    ]);
 
     const handleSelectSubdivision = (subdivision) => {};
 
