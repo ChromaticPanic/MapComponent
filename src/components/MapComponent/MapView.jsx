@@ -137,65 +137,62 @@ const MapView = (props) => {
     };
     useEffect(setupTracks, [mapRef]);
 
-    const [markersActiveRemediation, setMarkersActiveRemediation] =
+    const markersActiveRemediation =
         useLoadMarkers(
             mapRef,
             mapsRef,
             incidentsActiveRemediation,
             pinColorActiveRemediation,
             scaleMdSolo,
-            handleActiveRemediationClick
+            handleActiveRemediationClick,
+            active
         );
-    const [markersPredictedIncident, setMarkersPredictedIncident] =
+    const markersPredictedIncident =
         useLoadMarkers(
             mapRef,
             mapsRef,
             incidentsPredicted,
             pinColorPredictedIncident,
             scaleMdSolo,
-            handlePredictedIncidentClick
+            handlePredictedIncidentClick,
+            predicted
         );
-    const [markersHighPriorityIncident, setMarkersHighPriorityIncident] =
+    const markersHighPriorityIncident =
         useLoadMarkers(
             mapRef,
             mapsRef,
             incidentsHighPriority,
             pinColorHighPriorityIncident,
             scaleMdSolo,
-            handleHighPriorityIncidentClick
+            handleHighPriorityIncidentClick,
+            priority
         );
 
-    const [
-        markersActiveRemediationCluster,
-        setMarkersActiveRemediationCluster,
-    ] = useClusterer(
+    const markersActiveRemediationCluster = useClusterer(
         mapRef,
         mapsRef,
         markersActiveRemediation,
         pinColorActiveRemediation,
-        scaleMdCluster
+        scaleMdCluster,
+        active
     );
 
-    const [
-        markersPredictedIncidentCluster,
-        setMarkersPredictedIncidentCluster,
-    ] = useClusterer(
+    const markersPredictedIncidentCluster = useClusterer(
         mapRef,
         mapsRef,
         markersPredictedIncident,
         pinColorPredictedIncident,
-        scaleMdCluster
+        scaleMdCluster,
+        predicted
     );
 
-    const [
-        markersHighPriorityIncidentCluster,
-        setMarkersHighPriorityIncidentCluster,
-    ] = useClusterer(
+    const markersHighPriorityIncidentCluster = useClusterer(
         mapRef,
         mapsRef,
         markersHighPriorityIncident,
         pinColorHighPriorityIncident,
-        scaleMdCluster
+        scaleMdCluster,
+        priority
     );
 
     const handleActiveRemediationToggle = () => {

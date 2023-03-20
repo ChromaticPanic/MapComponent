@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 
 export const mapMarkers = (props) => {
-    const { mapRef: map, mapsRef, incidents, onMarkerClick } = props;
+    const { mapsRef, incidents, onMarkerClick } = props;
 
     const setupListeners = (marker, incident, onMarkerClick) => {
         marker.addListener("click", () => {
@@ -33,7 +33,7 @@ export const mapMarkers = (props) => {
 
     const markers = incidents.map((i) => {
         const { lat, lng, iconStyle, text, key } = i;
-        let newMarker = new mapsRef.Marker({position: {lat, lng}, map, icon: iconStyle, title: text, key});
+        let newMarker = new mapsRef.Marker({position: {lat, lng}, icon: iconStyle, title: text, key});
 
         setupListeners(newMarker, i, onMarkerClick);
         return newMarker;

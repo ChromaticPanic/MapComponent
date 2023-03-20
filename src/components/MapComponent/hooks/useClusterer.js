@@ -2,12 +2,13 @@ import { MarkerClusterer } from "@googlemaps/markerclusterer";
 import { useEffect, useState } from "react";
 import { markerIcon } from "../components/MapIcons";
 
-const useClusterer = (map, maps, markers, pinColor, scale) => {
+const useClusterer = (map, maps, markers, pinColor, scale, visible) => {
     const [clusterer, setClusterer] = useState(null);
     useEffect(() => {
         if (!map || !markers) return;
         const renderer = {
             render: ({ count, position }) => {
+                if (count < 2) return null;
                 const anchorFunc = (x, y) => {
                     return new maps.Point(x, y);
                 };
@@ -19,7 +20,7 @@ const useClusterer = (map, maps, markers, pinColor, scale) => {
                         strokeOpacity: 0.5,
                         strokeWeight: 6,
                         strokeColor: "#f9e79f",
-                    }
+                    },
                 });
                 const marker = new maps.Marker({
                     label: {
@@ -55,11 +56,18 @@ const useClusterer = (map, maps, markers, pinColor, scale) => {
         };
 
         const newClusterer = new MarkerClusterer({ markers, renderer });
-        newClusterer.setMap(map);
+        // const newClusterer = new MarkerClusterer({ markers });
+        // newClusterer.setMap(map);
 
         setClusterer(newClusterer);
     }, [map, maps, markers, pinColor, scale]);
-    return [clusterer, setClusterer];
+
+    useEffect(() => {
+        if (!clusterer) return;
+        clusterer.setMap(visible ? map : null);
+    }, [clusterer, map, visible]);
+
+    return clusterer;
 };
 
 export default useClusterer;
