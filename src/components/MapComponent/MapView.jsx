@@ -12,7 +12,6 @@ import tracks from "./assets/trackssubds.geojson";
 import { useState, useEffect } from "react";
 import { useLoadMarkers, useClusterer } from "./hooks";
 import {
-    scaleLgSolo,
     scaleMdSolo,
     scaleMdCluster,
     pinColorActiveRemediation,
@@ -39,7 +38,6 @@ const MapView = (props) => {
         location,
         width,
         height: heightProp,
-        stations,
         incidentsActiveRemediation,
         incidentsPredicted,
         incidentsHighPriority,
@@ -47,8 +45,6 @@ const MapView = (props) => {
         handlePredictedIncidentClick,
         handleHighPriorityIncidentClick,
     } = props;
-
-    const zoomNoClusterThreshold = 1;
 
     const [mapRef, setMap] = useState(null);
     const [mapsRef, setMaps] = useState(null);
@@ -194,57 +190,6 @@ const MapView = (props) => {
         scaleMdCluster,
         priority
     );
-
-    const handleActiveRemediationToggle = () => {
-        if (!mapRef || !markersActiveRemediation) return;
-
-        if (markersActiveRemediationCluster) {
-            if (active) {
-                // markersActiveRemediationCluster.setMap(mapRef)
-                markersActiveRemediationCluster.addMarkers(markersActiveRemediation);
-            } else {
-                // markersActiveRemediationCluster.setMap(null)
-                markersActiveRemediationCluster.clearMarkers();
-            }
-        }
-    };
-    useEffect(handleActiveRemediationToggle, [active, mapRef, markersActiveRemediation, markersActiveRemediationCluster]);
-
-    const handlePredictedIncidentToggle = () => {
-        if (!markersPredictedIncident) return;
-        if (markersPredictedIncidentCluster) {
-            if (predicted) {
-                markersPredictedIncidentCluster.addMarkers(
-                    markersPredictedIncident
-                );
-            } else {
-                markersPredictedIncidentCluster.clearMarkers();
-            }
-        }
-    };
-    useEffect(handlePredictedIncidentToggle, [
-        markersPredictedIncident,
-        markersPredictedIncidentCluster,
-        predicted,
-    ]);
-
-    const handleHighPriorityIncidentToggle = () => {
-        if (!markersHighPriorityIncident) return;
-        if (markersHighPriorityIncidentCluster) {
-            if (priority) {
-                markersHighPriorityIncidentCluster.addMarkers(
-                    markersHighPriorityIncident
-                );
-            } else {
-                markersHighPriorityIncidentCluster.clearMarkers();
-            }
-        }
-    };
-    useEffect(handleHighPriorityIncidentToggle, [
-        markersHighPriorityIncident,
-        markersHighPriorityIncidentCluster,
-        priority,
-    ]);
 
     const resetFocus = () => {
         if (!mapRef || !mapsRef) return;

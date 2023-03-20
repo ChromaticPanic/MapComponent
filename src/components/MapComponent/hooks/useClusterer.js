@@ -58,14 +58,19 @@ const useClusterer = (map, maps, markers, pinColor, scale, visible) => {
         const newClusterer = new MarkerClusterer({ markers, renderer });
         // const newClusterer = new MarkerClusterer({ markers });
         // newClusterer.setMap(map);
-
-        setClusterer(newClusterer);
-    }, [map, maps, markers, pinColor, scale]);
+        if (visible) {
+            newClusterer.setMap(map);
+            setClusterer(newClusterer);
+        } 
+    }, [map, maps, markers, pinColor, scale, visible]);
 
     useEffect(() => {
         if (!clusterer) return;
-        clusterer.setMap(visible ? map : null);
-    }, [clusterer, map, visible]);
+        if (!visible) {
+            clusterer.setMap(null);
+            setClusterer(null);
+        }
+    }, [clusterer, visible]);
 
     return clusterer;
 };
