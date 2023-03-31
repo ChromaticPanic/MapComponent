@@ -37,18 +37,18 @@ const MapDemoContainer = () => {
     };
 
     const handlePredictedIncidentClick = () => {
-        // use assets/Activity3.jpg
-        setImage(img3);
-        setModalWidth(1920);
-        setModalHeight(1080);
-        setShowModal(true);
-    };
-
-    const handleHighPriorityIncidentClick = () => {
         // use assets/Activity1.jpg
         setImage(img1);
         setModalWidth(400);
         setModalHeight(600);
+        setShowModal(true);
+    };
+
+    const handleHighPriorityIncidentClick = () => {
+        // use assets/Activity3.jpg
+        setImage(img3);
+        setModalWidth(1920);
+        setModalHeight(1080);
         setShowModal(true);
     };
 
